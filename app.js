@@ -1,44 +1,146 @@
 // ===== メインアプリケーションロジック =====
 
-let workspace = null;
+let programBlocks = [];
 
 // 初期化
 document.addEventListener('DOMContentLoaded', function () {
-    initBlockly();
-    initTurtleSimulator();
+    initDragAndDrop();
     initEventListeners();
-    updateCodePreview();
+    initTurtleSimulator();
 });
 
-// Blocklyワークスペースの初期化
-function initBlockly() {
-    workspace = Blockly.inject('blocklyDiv', {
-        toolbox: document.getElementById('toolbox'),
-        scrollbars: true,
-        trashcan: true,
-        zoom: {
-            controls: true,
-            wheel: true,
-            startScale: 1.0,
-            maxScale: 3,
-            minScale: 0.3,
-            scaleSpeed: 1.2
-        },
-        grid: {
-            spacing: 20,
-            length: 3,
-            colour: '#ccc',
-            snap: true
-        }
+// ドラッグ＆ドロップの初期化
+function initDragAndDrop() {
+    const templates = document.querySelectorAll('.block-template');
+    const programArea = document.getElementById('programArea');
+
+    // テンプレートブロックにドラッグイベントを設定
+    templates.forEach(template => {
+        template.setAttribute('draggable', 'true');
+
+        template.addEventListener('dragstart', function (e) {
+            e.dataTransfer.setData('text/plain', JSON.stringify({
+                type: this.dataset.type,
+                code: this.dataset.code,
+                html: this.innerHTML
+            }));
+            this.classList.add('dragging');
+        });
+
+        template.addEventListener('dragend', function () {
+            this.classList.remove('dragging');
+        });
     });
 
-    // ワークスペース初期化時にはデフォルトを表示
-    const codePreview = document.getElementById('codePreview');
-    codePreview.textContent = `# ブロックを組み立ててから
-# RUNボタンを押してね！
+    // プログラムエリアにドロップイベントを設定
+    programArea.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        this.classList.add('drag-over');
+    });
 
-import turtle
-t = turtle.Turtle()`;
+    programArea.addEventListener('dragleave', function () {
+        this.classList.remove('drag-over');
+    });
+
+    programArea.addEventListener('drop', function (e) {
+        e.preventDefault();
+        this.classList.remove('drag-over');
+
+        try {
+            const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+            addBlockToProgram(data);
+        } catch (err) {
+            console.error('ドロップエラー:', err);
+        }
+    });
+}
+
+// プログラムにブロックを追加
+function addBlockToProgram(data) {
+    const programArea = document.getElementById('programArea');
+
+    // ヒントテキストを削除
+    const hint = programArea.querySelector('.drop-hint');
+    if (hint) hint.remove();
+
+    // ブロック要素を作成
+    const block = document.createElement('div');
+    block.className = 'program-block';
+    block.dataset.type = data.type;
+    block.dataset.code = data.code;
+
+    // セレクトボックスを含むHTMLを解析
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = data.html;
+
+    // セレクトの値を取得
+    const selects = tempDiv.querySelectorAll('select');
+    const params = {};
+    selects.forEach(sel => {
+        params[sel.dataset.param] = sel.value;
+    });
+    block.dataset.params = JSON.stringify(params);
+
+    // ブロックの内容を設定
+    const contentSpan = document.createElement('span');
+    contentSpan.className = 'block-content';
+
+    // テキスト部分を生成
+    let displayText = data.html.replace(/<select[^>]*>[\s\S]*?<\/select>/gi, function (match) {
+        const temp = document.createElement('div');
+        temp.innerHTML = match;
+        const sel = temp.querySelector('select');
+        const param = sel.dataset.param;
+
+        // セレクトボックスを作成
+        const newSelect = document.createElement('select');
+        newSelect.className = 'block-select';
+        newSelect.dataset.param = param;
+        newSelect.innerHTML = sel.innerHTML;
+        newSelect.value = params[param];
+
+        return newSelect.outerHTML;
+    });
+    contentSpan.innerHTML = displayText;
+
+    // 削除ボタンを追加
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.textContent = '✕';
+    deleteBtn.onclick = function () {
+        block.remove();
+        updateProgramBlocks();
+        // ブロックがなくなったらヒントを表示
+        if (programArea.children.length === 0) {
+            programArea.innerHTML = '<p class="drop-hint">← ブロックをここにドラッグ＆ドロップ！</p>';
+        }
+    };
+
+    block.appendChild(contentSpan);
+    block.appendChild(deleteBtn);
+
+    // セレクト変更時にパラメータを更新
+    block.querySelectorAll('.block-select').forEach(sel => {
+        sel.addEventListener('change', function () {
+            const params = JSON.parse(block.dataset.params);
+            params[this.dataset.param] = this.value;
+            block.dataset.params = JSON.stringify(params);
+        });
+    });
+
+    programArea.appendChild(block);
+    updateProgramBlocks();
+}
+
+// プログラムブロックの配列を更新
+function updateProgramBlocks() {
+    const programArea = document.getElementById('programArea');
+    const blocks = programArea.querySelectorAll('.program-block');
+    programBlocks = Array.from(blocks).map(block => ({
+        type: block.dataset.type,
+        code: block.dataset.code,
+        params: JSON.parse(block.dataset.params || '{}')
+    }));
 }
 
 // イベントリスナーの初期化
@@ -47,62 +149,85 @@ function initEventListeners() {
     document.getElementById('resetBtn').addEventListener('click', resetProgram);
 }
 
-// コードプレビューの更新
-function updateCodePreview(code) {
-    try {
-        // コードプレビューに表示
-        const codePreview = document.getElementById('codePreview');
-        codePreview.textContent = code;
-
-        // シンタックスハイライトを適用
-        Prism.highlightElement(codePreview);
-
-    } catch (error) {
-        console.error('コードプレビュー更新エラー:', error);
+// Pythonコードを生成
+function generatePythonCode() {
+    if (programBlocks.length === 0) {
+        return null;
     }
+
+    let code = '';
+    let indentLevel = 0;
+    const indent = '    ';
+
+    for (const block of programBlocks) {
+        let line = block.code;
+
+        // パラメータを置換
+        for (const [key, value] of Object.entries(block.params)) {
+            line = line.replace('{' + key + '}', value);
+        }
+
+        // ループ終わりの処理
+        if (block.type === 'loop_end') {
+            indentLevel = Math.max(0, indentLevel - 1);
+            continue; // ループ終わりはコードとして出力しない
+        }
+
+        // インデントを追加
+        code += indent.repeat(indentLevel) + line + '\n';
+
+        // ループ開始の場合、次からインデント
+        if (block.type === 'loop_start') {
+            indentLevel++;
+        }
+    }
+
+    return code;
 }
 
 // プログラム実行
 async function runProgram() {
+    const runBtn = document.getElementById('runBtn');
+
     try {
-        // 実行中は無効化
-        const runBtn = document.getElementById('runBtn');
         runBtn.disabled = true;
-        runBtn.textContent = '⏳ ...';
+        runBtn.textContent = '⏳...';
 
-        // 1. RUNを押したタイミングでコードを生成
-        if (!Blockly.Python) {
-            showConsoleMessage('エラー: Pythonジェネレーターが読み込まれていません', 'error');
+        updateProgramBlocks();
+
+        if (programBlocks.length === 0) {
+            showConsoleMessage('ブロックを配置してからRUNを押してね！🧩', 'error');
             return;
         }
 
-        let code = '';
-        try {
-            code = Blockly.Python.workspaceToCode(workspace);
-        } catch (genError) {
-            console.error('コード生成中のエラー:', genError);
-            showConsoleMessage('コード生成に失敗したのだ...🧩: ' + genError.message, 'error');
+        // startブロックがあるかチェック
+        const hasStart = programBlocks.some(b => b.type === 'start');
+        if (!hasStart) {
+            showConsoleMessage('「🚀 プログラム開始」ブロックを最初に置いてね！', 'error');
             return;
         }
 
-        if (!code.trim() || code.length < 10) { // startブロックだけだと短い
-            showConsoleMessage('ブロックを正しく組み立ててね！🧩', 'error');
+        // Pythonコードを生成
+        const code = generatePythonCode();
+
+        if (!code) {
+            showConsoleMessage('コードを生成できなかったのだ...', 'error');
             return;
         }
 
-        // 2. コードプレビューを更新
-        updateCodePreview(code);
+        // コードプレビューを更新
+        const codePreview = document.getElementById('codePreview');
+        codePreview.textContent = code;
+        Prism.highlightElement(codePreview);
 
         showConsoleMessage('プログラムを実行中... 🏃', 'info');
 
-        // 3. タートルシミュレーター実行
+        // タートルシミュレーターで実行
         await executeTurtleCommands(code);
 
     } catch (error) {
-        showConsoleMessage(`エラー: ${error.message}`, 'error');
+        showConsoleMessage('エラー: ' + error.message, 'error');
     } finally {
-        // ボタンを再有効化
-        const runBtn = document.getElementById('runBtn');
         runBtn.disabled = false;
         runBtn.textContent = '▶ RUN';
     }
@@ -110,33 +235,15 @@ async function runProgram() {
 
 // プログラムリセット
 function resetProgram() {
-    // タートルシミュレーターをリセット
     if (turtleSim) {
         turtleSim.reset();
     }
-
-    // コンソールメッセージをリセット
     showConsoleMessage('リセット完了！新しいプログラムを作ろう 🎨', 'success');
 }
 
-// キーボードショートカット
-document.addEventListener('keydown', function (e) {
-    // Ctrl+Enter または Cmd+Enter で実行
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-        e.preventDefault();
-        runProgram();
-    }
-
-    // Ctrl+R または Cmd+R でリセット（ブラウザのリロードを防ぐ）
-    if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-        e.preventDefault();
-        resetProgram();
-    }
-});
-
-// ウィンドウリサイズ時の処理
-window.addEventListener('resize', function () {
-    if (workspace) {
-        Blockly.svgResize(workspace);
-    }
-});
+// コンソールメッセージ表示
+function showConsoleMessage(message, type) {
+    const consoleOutput = document.getElementById('consoleOutput');
+    consoleOutput.textContent = message;
+    consoleOutput.className = 'console-output ' + (type || '');
+}
