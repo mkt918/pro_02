@@ -248,55 +248,101 @@ async function executeTurtleCommands(code) {
     }
 }
 
-// Pythonコードのパース（拡張版）
+// Pythonコードのパースと実行（再帰的処理によるネスト対応版）
 async function parsePythonCode(code) {
-    const lines = code.split('\n').filter(line => line.trim() && !line.trim().startsWith('#') && !line.trim().startsWith('import'));
+    // 空行を除去し、行ごとの情報を保持（インデントレベル計算のため元の行も保持）
+    const lines = code.split('\n').filter(line => line.trim() !== '');
 
-    let indentLevel = 0;
-    let loopCount = 0;
-    let loopCommands = [];
+    // エントリーポイント：全行を深さ0として実行開始
+    await executeBlock(lines, 0, 0, lines.length);
+}
 
-    for (const line of lines) {
+// ブロック実行関数
+// lines: 全行データ
+// startIndex: このブロックの開始行インデックス
+// baseIndent: このブロックの基準インデントレベル（文字数）
+// endIndex: このブロックの終了行インデックス（含まない）
+async function executeBlock(lines, startIndex, baseIndent, endIndex) {
+    let i = startIndex;
+
+    while (i < endIndex) {
+        if (turtleSim && turtleSim.hasError) break;
+
+        const line = lines[i];
         const trimmed = line.trim();
+
+        // コメントはスキップ
+        if (trimmed.startsWith('#')) {
+            i++;
+            continue;
+        }
+
+        // 現在の行のインデントを取得
         const currentIndent = line.search(/\S/);
 
+        // インデントが基準より浅い場合は、このブロックの処理は終了（基本的には呼び出し元で制御されるが念のため）
+        if (currentIndent < baseIndent) {
+            break;
+        }
+
+        // ループの開始検出
         if (trimmed.startsWith('for')) {
             const match = trimmed.match(/range\((\d+)\)/);
             if (match) {
-                loopCount = parseInt(match[1]);
-                indentLevel = currentIndent;
-                loopCommands = [];
-            }
-            continue;
-        }
+                const loopCount = parseInt(match[1]);
 
-        if (currentIndent > indentLevel && loopCount > 0) {
-            loopCommands.push(trimmed);
-            continue;
-        }
+                // ループブロックの範囲を特定する
+                // 次の行から開始
+                const loopStart = i + 1;
+                let loopEnd = loopStart;
 
-        if (loopCommands.length > 0 && currentIndent <= indentLevel) {
-            for (let i = 0; i < loopCount; i++) {
-                for (const cmd of loopCommands) {
-                    await executeCommand(cmd);
+                // 次の行のインデント（ループの中身のインデント）を取得
+                let innerIndent = -1;
+                if (loopStart < lines.length) {
+                    const nextLine = lines[loopStart];
+                    if (nextLine.trim() !== '') {
+                        innerIndent = nextLine.search(/\S/);
+                    }
                 }
+
+                // もし次の行がない、またはインデントが深くない場合は、中身のないループとしてスキップ
+                if (innerIndent <= currentIndent) {
+                    i++;
+                    continue;
+                }
+
+                // このインデントレベルが続く限りをループブロックとする
+                while (loopEnd < endIndex) {
+                    const checkLine = lines[loopEnd];
+                    // 空行は無視して続行（今回はfilterで消えているが念のため）
+                    if (checkLine.trim() === '') {
+                        loopEnd++;
+                        continue;
+                    }
+
+                    const checkIndent = checkLine.search(/\S/);
+                    // インデントが戻ったらブロック終了
+                    if (checkIndent < innerIndent) {
+                        break;
+                    }
+                    loopEnd++;
+                }
+
+                // ループ実行
+                for (let c = 0; c < loopCount; c++) {
+                    await executeBlock(lines, loopStart, innerIndent, loopEnd);
+                    if (turtleSim && turtleSim.hasError) break;
+                }
+
+                // 処理を行が進んだ分までスキップ
+                i = loopEnd;
+                continue;
             }
-            loopCommands = [];
-            loopCount = 0;
-            indentLevel = 0;
         }
 
-        if (currentIndent === 0 || loopCount === 0) {
-            await executeCommand(trimmed);
-        }
-    }
-
-    if (loopCommands.length > 0) {
-        for (let i = 0; i < loopCount; i++) {
-            for (const cmd of loopCommands) {
-                await executeCommand(cmd);
-            }
-        }
+        // 通常コマンドの実行
+        await executeCommand(trimmed);
+        i++;
     }
 }
 
