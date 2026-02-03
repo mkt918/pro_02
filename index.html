@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🐢 Python Turtle Learner</title>
-    <link rel="stylesheet" href="styles.css?v=3">
+    <title>🐢 Python Turtle Learner v2.1</title>
+    <link rel="stylesheet" href="styles.css?v=4">
+    <!-- SortableJS for drag and drop reordering -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <!-- Prism.js for Syntax Highlighting -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -17,7 +19,7 @@
     <header class="header">
         <div class="header-left">
             <h1>🐢 Python Turtle Learner</h1>
-            <p class="subtitle">タイピング・ゼロでPythonを学ぼう！</p>
+            <p class="subtitle">タイピング・ゼロでプログラミング！並び替えも自由自在なのだ！</p>
         </div>
         <div class="header-right">
             <button id="runBtn" class="btn btn-run">▶ RUN</button>
@@ -31,96 +33,147 @@
         <section class="column column-blocks">
             <h2 class="column-title">📦 ブロックパレット</h2>
             <div id="palette" class="palette">
-                <div class="palette-category">🚀 開始</div>
+                <div class="palette-category">🚀 基本</div>
                 <div class="block-template" data-type="start"
                     data-code="import turtle\nt = turtle.Turtle()\nt.speed(3)">
                     🚀 プログラム開始
                 </div>
+                <div class="block-template" data-type="speed" data-code="t.speed({val})">
+                    ⚡ はやさを変える <select class="block-select" data-param="val">
+                        <option value="1">1 (おそい)</option>
+                        <option value="3" selected>3 (ふつう)</option>
+                        <option value="6">6 (はやい)</option>
+                        <option value="10">10 (とてもはやい)</option>
+                        <option value="0">0 (しゅんかん)</option>
+                    </select>
+                </div>
 
                 <div class="palette-category">🚶 移動</div>
                 <div class="block-template" data-type="forward" data-code="t.forward({distance})">
-                    ⬆️ 前に進む <select class="block-select" data-param="distance">
+                    ⬆️ 前に <select class="block-select" data-param="distance">
                         <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
                         <option value="50">50</option>
+                        <option value="60">60</option>
+                        <option value="70">70</option>
+                        <option value="80">80</option>
+                        <option value="90">90</option>
                         <option value="100" selected>100</option>
-                        <option value="200">200</option>
-                    </select> 歩
+                    </select> 歩すすむ
                 </div>
                 <div class="block-template" data-type="backward" data-code="t.backward({distance})">
-                    ⬇️ 後ろに進む <select class="block-select" data-param="distance">
+                    ⬇️ 後ろに <select class="block-select" data-param="distance">
                         <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
                         <option value="50">50</option>
+                        <option value="60">60</option>
+                        <option value="70">70</option>
+                        <option value="80">80</option>
+                        <option value="90">90</option>
                         <option value="100" selected>100</option>
-                        <option value="200">200</option>
-                    </select> 歩
+                    </select> 歩さがる
+                </div>
+                <div class="block-template" data-type="circle" data-code="t.circle({radius})">
+                    ⚪ まあるく描く (半径 <select class="block-select" data-param="radius">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                        <option value="50" selected>50</option>
+                        <option value="60">60</option>
+                        <option value="70">70</option>
+                        <option value="80">80</option>
+                        <option value="90">90</option>
+                        <option value="100">100</option>
+                    </select> )
                 </div>
 
                 <div class="palette-category">🔄 回転</div>
                 <div class="block-template" data-type="right" data-code="t.right({angle})">
-                    ↪️ 右に回る <select class="block-select" data-param="angle">
+                    ↪️ 右に <select class="block-select" data-param="angle">
                         <option value="15">15°</option>
                         <option value="30">30°</option>
                         <option value="45">45°</option>
+                        <option value="60">60°</option>
+                        <option value="72">72°</option>
                         <option value="90" selected>90°</option>
+                        <option value="120">120°</option>
+                        <option value="144">144°</option>
                         <option value="180">180°</option>
-                    </select>
+                    </select> 回る
                 </div>
                 <div class="block-template" data-type="left" data-code="t.left({angle})">
-                    ↩️ 左に回る <select class="block-select" data-param="angle">
+                    ↩️ 左に <select class="block-select" data-param="angle">
                         <option value="15">15°</option>
                         <option value="30">30°</option>
                         <option value="45">45°</option>
+                        <option value="60">60°</option>
+                        <option value="72">72°</option>
                         <option value="90" selected>90°</option>
+                        <option value="120">120°</option>
+                        <option value="144">144°</option>
                         <option value="180">180°</option>
-                    </select>
+                    </select> 回る
                 </div>
 
                 <div class="palette-category">🔁 ループ</div>
                 <div class="block-template loop-block" data-type="loop_start" data-code="for i in range({count}):">
-                    🔁 繰り返す <select class="block-select" data-param="count">
-                        <option value="2">2回</option>
-                        <option value="3">3回</option>
-                        <option value="4" selected>4回</option>
-                        <option value="5">5回</option>
-                        <option value="6">6回</option>
-                        <option value="8">8回</option>
-                        <option value="10">10回</option>
-                    </select> ↓
+                    🔁 <select class="block-select" data-param="count">
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4" selected>4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                    </select> 回くりかえす ↓
                 </div>
                 <div class="block-template loop-end-block" data-type="loop_end" data-code="# ループ終わり">
-                    🔁 ↑ ここまで繰り返す
+                    🔁 ↑ ここまで
                 </div>
 
-                <div class="palette-category">🖊️ ペン</div>
-                <div class="block-template" data-type="penup" data-code="t.penup()">
-                    🖊️ ペンを上げる
-                </div>
-                <div class="block-template" data-type="pendown" data-code="t.pendown()">
-                    🖊️ ペンを下ろす
-                </div>
+                <div class="palette-category">🖊️ 特殊</div>
                 <div class="block-template" data-type="color" data-code="t.color('{color}')">
-                    🎨 色を変える <select class="block-select" data-param="color">
+                    🎨 色を <select class="block-select" data-param="color">
                         <option value="red">赤 🔴</option>
                         <option value="blue">青 🔵</option>
                         <option value="green">緑 🟢</option>
                         <option value="yellow">黄 🟡</option>
                         <option value="purple">紫 🟣</option>
+                        <option value="pink">桃 🩷</option>
+                        <option value="orange">橙 🟠</option>
                         <option value="black" selected>黒 ⚫</option>
-                        <option value="orange">オレンジ 🟠</option>
-                    </select>
+                    </select> に変える
+                </div>
+                <div class="block-template" data-type="stamp" data-code="t.stamp()">
+                    👣 スタンプをおす
+                </div>
+                <div class="block-template" data-type="clear" data-code="t.clear()">
+                    🧹 画面をそうじする
+                </div>
+                <div class="block-template" data-type="penup" data-code="t.penup()">
+                    🖊️ ペンをあげる
+                </div>
+                <div class="block-template" data-type="pendown" data-code="t.pendown()">
+                    🖊️ ペンをさげる
                 </div>
             </div>
         </section>
 
         <!-- Middle Column: Program Area -->
         <section class="column column-program">
-            <h2 class="column-title">📝 プログラム</h2>
+            <h2 class="column-title">📝 プログラム (並び替えOK)</h2>
             <div id="programArea" class="program-area">
-                <p class="drop-hint">← ブロックをここにドラッグ＆ドロップ！</p>
+                <p class="drop-hint">← ブロックをドラッグして並べてね！<br>入れた後は上下に入れ替えられるのだ！</p>
             </div>
             <div class="code-preview-container">
-                <h3>🐍 生成されるPythonコード</h3>
-                <pre><code id="codePreview" class="language-python"># RUNボタンを押すとコードが生成されるのだ！</code></pre>
+                <h3>🐍 Pythonコード</h3>
+                <pre><code id="codePreview" class="language-python"># RUNを押すと生成されるのだ！</code></pre>
             </div>
         </section>
 
@@ -132,14 +185,14 @@
             </div>
             <div id="console" class="console">
                 <div class="console-title">📋 コンソール</div>
-                <div id="consoleOutput" class="console-output">準備完了！ブロックを組み立ててRUNボタンを押してね 🚀</div>
+                <div id="consoleOutput" class="console-output">準備完了なのだ！🚀</div>
             </div>
         </section>
     </main>
 
     <!-- Scripts -->
-    <script src="turtle-simulator.js?v=3"></script>
-    <script src="app.js?v=3"></script>
+    <script src="turtle-simulator.js?v=4"></script>
+    <script src="app.js?v=4"></script>
 </body>
 
 </html>

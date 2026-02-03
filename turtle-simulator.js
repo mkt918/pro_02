@@ -107,6 +107,67 @@ class TurtleSimulator {
         this.angle = (this.angle - angle + 360) % 360;
     }
 
+    async circle(radius) {
+        if (this.hasError) return;
+
+        // 簡易的な円描画（36角形）
+        const steps = 36;
+        const stepAngle = 360 / steps;
+        const stepDistance = (2 * Math.PI * radius) / steps;
+
+        for (let i = 0; i < steps; i++) {
+            await this.forward(stepDistance);
+            this.left(stepAngle);
+        }
+    }
+
+    setSpeed(val) {
+        // speed(0)は瞬間だが、ここでは最速(1ms)にする
+        this.speed = val === 0 ? 1 : Math.max(1, 20 - val * 2);
+    }
+
+    stamp() {
+        if (this.hasError) return;
+
+        // 現在の位置と向きでスタンプ（半透明のタートル）をキャンバスに直接描画
+        const size = 15;
+        this.ctx.save();
+        this.ctx.translate(this.x, this.y);
+        this.ctx.rotate(this.angle * Math.PI / 180);
+
+        this.ctx.fillStyle = 'rgba(76, 175, 80, 0.4)';
+        this.ctx.strokeStyle = 'rgba(46, 125, 50, 0.4)';
+        this.ctx.lineWidth = 1;
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(size, 0);
+        this.ctx.lineTo(-size * 0.7, -size * 0.7);
+        this.ctx.lineTo(-size * 0.7, size * 0.7);
+        this.ctx.closePath();
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        this.ctx.restore();
+    }
+
+    clear() {
+        const oldX = this.x;
+        const oldY = this.y;
+        const oldAngle = this.angle;
+        const oldColor = this.color;
+        const oldPen = this.penDown;
+
+        this.reset();
+
+        // 位置と角度を復元（clearは画面を消すだけでタートルは動かさない）
+        this.x = oldX;
+        this.y = oldY;
+        this.angle = oldAngle;
+        this.color = oldColor;
+        this.penDown = oldPen;
+        this.drawTurtle();
+    }
+
     penup() {
         this.penDown = false;
     }
@@ -120,26 +181,23 @@ class TurtleSimulator {
     }
 
     checkBoundary(x, y) {
-        const margin = 10;
+        const margin = 5; // マージンを少し狭くして自由に動けるように
         return x >= margin && x <= this.width - margin &&
             y >= margin && y <= this.height - margin;
     }
 
     async animateMove(targetX, targetY) {
-        const steps = 20;
+        // ... (省略なしで再実装)
+        const steps = Math.max(1, Math.floor(20 / (20 / this.speed))); // 速度に応じてステップ数を変える
         const dx = (targetX - this.x) / steps;
         const dy = (targetY - this.y) / steps;
 
         for (let i = 0; i < steps; i++) {
-            // 前のタートルを消去
             this.clearTurtle();
-
-            // 線を描画（ペンが下りている場合）
             if (this.penDown) {
                 this.ctx.strokeStyle = this.color;
                 this.ctx.lineWidth = 2;
                 this.ctx.lineCap = 'round';
-
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.x, this.y);
                 this.x += dx;
@@ -150,13 +208,13 @@ class TurtleSimulator {
                 this.x += dx;
                 this.y += dy;
             }
-
-            // 新しいタートルを描画
             this.drawTurtle();
-
-            // アニメーション待機
             await this.sleep(this.speed);
         }
+        // 位置を正確に合わせる
+        this.x = targetX;
+        this.y = targetY;
+        this.drawTurtle();
     }
 
     sleep(ms) {
@@ -181,9 +239,7 @@ async function executeTurtleCommands(code) {
     turtleSim.reset();
 
     try {
-        // Pythonコードを解析して実行
         await parsePythonCode(code);
-
         if (!turtleSim.hasError) {
             showConsoleMessage('実行完了！素晴らしいのだ！✨', 'success');
         }
@@ -192,7 +248,7 @@ async function executeTurtleCommands(code) {
     }
 }
 
-// Pythonコードのパース（簡易版）
+// Pythonコードのパース（拡張版）
 async function parsePythonCode(code) {
     const lines = code.split('\n').filter(line => line.trim() && !line.trim().startsWith('#') && !line.trim().startsWith('import'));
 
@@ -204,7 +260,6 @@ async function parsePythonCode(code) {
         const trimmed = line.trim();
         const currentIndent = line.search(/\S/);
 
-        // ループの開始
         if (trimmed.startsWith('for')) {
             const match = trimmed.match(/range\((\d+)\)/);
             if (match) {
@@ -215,13 +270,11 @@ async function parsePythonCode(code) {
             continue;
         }
 
-        // ループ内のコマンド
         if (currentIndent > indentLevel && loopCount > 0) {
             loopCommands.push(trimmed);
             continue;
         }
 
-        // ループの終了・実行
         if (loopCommands.length > 0 && currentIndent <= indentLevel) {
             for (let i = 0; i < loopCount; i++) {
                 for (const cmd of loopCommands) {
@@ -233,13 +286,11 @@ async function parsePythonCode(code) {
             indentLevel = 0;
         }
 
-        // 通常のコマンド実行
         if (currentIndent === 0 || loopCount === 0) {
             await executeCommand(trimmed);
         }
     }
 
-    // 最後のループを実行
     if (loopCommands.length > 0) {
         for (let i = 0; i < loopCount; i++) {
             for (const cmd of loopCommands) {
@@ -249,39 +300,46 @@ async function parsePythonCode(code) {
     }
 }
 
-// 個別コマンドの実行
+// 個別コマンドの実行（拡張版）
 async function executeCommand(cmd) {
-    if (!cmd || cmd === 'pass') return;
+    if (!cmd || cmd === 'pass' || cmd.startsWith('#')) return;
 
-    // forward
     if (cmd.includes('forward')) {
         const match = cmd.match(/forward\((\d+)\)/);
         if (match) await turtleSim.forward(parseInt(match[1]));
     }
-    // backward
     else if (cmd.includes('backward')) {
         const match = cmd.match(/backward\((\d+)\)/);
         if (match) await turtleSim.backward(parseInt(match[1]));
     }
-    // right
     else if (cmd.includes('right')) {
         const match = cmd.match(/right\((\d+)\)/);
         if (match) turtleSim.right(parseInt(match[1]));
     }
-    // left
     else if (cmd.includes('left')) {
         const match = cmd.match(/left\((\d+)\)/);
         if (match) turtleSim.left(parseInt(match[1]));
     }
-    // penup
+    else if (cmd.includes('circle')) {
+        const match = cmd.match(/circle\((\d+)\)/);
+        if (match) await turtleSim.circle(parseInt(match[1]));
+    }
+    else if (cmd.includes('speed')) {
+        const match = cmd.match(/speed\((\d+)\)/);
+        if (match) turtleSim.setSpeed(parseInt(match[1]));
+    }
+    else if (cmd.includes('stamp')) {
+        turtleSim.stamp();
+    }
+    else if (cmd.includes('clear')) {
+        turtleSim.clear();
+    }
     else if (cmd.includes('penup')) {
         turtleSim.penup();
     }
-    // pendown
     else if (cmd.includes('pendown')) {
         turtleSim.pendown();
     }
-    // color
     else if (cmd.includes('color')) {
         const match = cmd.match(/color\(['"](\w+)['"]\)/);
         if (match) turtleSim.setColor(match[1]);
