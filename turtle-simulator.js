@@ -37,17 +37,18 @@ class TurtleSimulator {
         const size = 15;
         this.ctx.save();
         this.ctx.translate(this.x, this.y);
-        this.ctx.rotate((this.angle - 90) * Math.PI / 180);
+        // キャンバス座標(Y下向き)では正の回転が時計回り
+        this.ctx.rotate(this.angle * Math.PI / 180);
 
-        // タートルの形（三角形）
+        // タートルの形（右向きの三角形）
         this.ctx.fillStyle = '#4CAF50';
         this.ctx.strokeStyle = '#2E7D32';
         this.ctx.lineWidth = 2;
 
         this.ctx.beginPath();
-        this.ctx.moveTo(0, -size);
-        this.ctx.lineTo(-size * 0.7, size * 0.7);
-        this.ctx.lineTo(size * 0.7, size * 0.7);
+        this.ctx.moveTo(size, 0); // 先端（右）
+        this.ctx.lineTo(-size * 0.7, -size * 0.7); // 後端（左上）
+        this.ctx.lineTo(-size * 0.7, size * 0.7); // 後端（左下）
         this.ctx.closePath();
         this.ctx.fill();
         this.ctx.stroke();
@@ -57,8 +58,20 @@ class TurtleSimulator {
 
     clearTurtle() {
         // タートルの周囲をクリア（再描画のため）
-        const size = 20;
-        this.ctx.clearRect(this.x - size, this.y - size, size * 2, size * 2);
+        const size = 30; // 以前より少し大きく
+        this.ctx.save();
+        this.ctx.globalCompositeOperation = 'destination-out';
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y, size, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
+
+        // 消した部分を白で塗り直す（背景が白の場合）
+        this.ctx.save();
+        this.ctx.fillStyle = 'white';
+        this.ctx.globalCompositeOperation = 'destination-over';
+        this.ctx.fillRect(this.x - size, this.y - size, size * 2, size * 2);
+        this.ctx.restore();
     }
 
     async forward(distance) {
@@ -84,11 +97,13 @@ class TurtleSimulator {
 
     right(angle) {
         if (this.hasError) return;
+        // キャンバス座標(Y下向き)では足すと時計回り(右)
         this.angle = (this.angle + angle) % 360;
     }
 
     left(angle) {
         if (this.hasError) return;
+        // 引くと反時計回り(左)
         this.angle = (this.angle - angle + 360) % 360;
     }
 
