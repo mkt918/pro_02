@@ -109,123 +109,123 @@
                 </div>
 
                 <div class="palette-category">🔄 回転</div>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50" selected>50</option>
-                <option value="60">60</option>
-                <option value="70">70</option>
-                <option value="80">80</option>
-                <option value="90">90</option>
-                <option value="100">100</option>
-                </select> )
-            </div>
+                <div class="block-template" data-type="right" data-code="t.right({angle})">
+                    ↪️ 右に <select class="block-select" data-param="angle">
+                        <option value="15">15°</option>
+                        <option value="30">30°</option>
+                        <option value="45">45°</option>
+                        <option value="60">60°</option>
+                        <option value="72">72°</option>
+                        <option value="90" selected>90°</option>
+                        <option value="120">120°</option>
+                        <option value="144">144°</option>
+                        <option value="180">180°</option>
+                    </select> 回る
+                </div>
+                <div class="block-template" data-type="left" data-code="t.left({angle})">
+                    ↩️ 左に <select class="block-select" data-param="angle">
+                        <option value="15">15°</option>
+                        <option value="30">30°</option>
+                        <option value="45">45°</option>
+                        <option value="60">60°</option>
+                        <option value="72">72°</option>
+                        <option value="90" selected>90°</option>
+                        <option value="120">120°</option>
+                        <option value="144">144°</option>
+                        <option value="180">180°</option>
+                    </select> 回る
+                </div>
 
-            <div class="palette-category">🔄 回転</div>
-            <div class="block-template" data-type="right" data-code="t.right({angle})">
-                ↪️ 右に <select class="block-select" data-param="angle">
-                    <option value="15">15°</option>
-                    <option value="30">30°</option>
-                    <option value="45">45°</option>
-                    <option value="60">60°</option>
-                    <option value="72">72°</option>
-                    <option value="90" selected>90°</option>
-                    <option value="120">120°</option>
-                    <option value="144">144°</option>
-                    <option value="180">180°</option>
-                </select> 回る
-            </div>
-            <div class="block-template" data-type="left" data-code="t.left({angle})">
-                ↩️ 左に <select class="block-select" data-param="angle">
-                    <option value="15">15°</option>
-                    <option value="30">30°</option>
-                    <option value="45">45°</option>
-                    <option value="60">60°</option>
-                    <option value="72">72°</option>
-                    <option value="90" selected>90°</option>
-                    <option value="120">120°</option>
-                    <option value="144">144°</option>
-                    <option value="180">180°</option>
-                </select> 回る
-            </div>
+                <div class="palette-category">🎨 図形</div>
+                <div class="block-template" data-type="circle" data-code="t.circle({radius})">
+                    ⚪ まあるく描く (半径 <select class="block-select" data-param="radius">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40" selected>40</option>
+                        <option value="50">50</option>
+                        <option value="60">60</option>
+                        <option value="80">80</option>
+                        <option value="100">100</option>
+                    </select>)
+                </div>
 
-            <div class="palette-category">🔁 ループ</div>
-            <div class="block-template loop-block" data-type="loop_start" data-code="for i in range({count}):">
-                🔁 <select class="block-select" data-param="count">
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4" selected>4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="8">8</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                </select> 回くりかえす ↓
-            </div>
-            <div class="block-template loop-end-block" data-type="loop_end" data-code="# ループ終わり">
-                🔁 ↑ ここまで
-            </div>
+                <div class="palette-category">🔁 ループ</div>
+                <div class="block-template loop-block" data-type="loop_start" data-code="for i in range({count}):">
+                    🔁 <select class="block-select" data-param="count">
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4" selected>4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                    </select> 回くりかえす ↓
+                </div>
+                <div class="block-template loop-end-block" data-type="loop_end" data-code="# ループ終わり">
+                    🔁 ↑ ここまで
+                </div>
 
-            <div class="palette-category">🖊️ 特殊</div>
-            <div class="block-template" data-type="color" data-code="t.color('{color}')">
-                🎨 色を <select class="block-select" data-param="color">
-                    <option value="red">赤 🔴</option>
-                    <option value="blue">青 🔵</option>
-                    <option value="green">緑 🟢</option>
-                    <option value="yellow">黄 🟡</option>
-                    <option value="purple">紫 🟣</option>
-                    <option value="pink">桃 🩷</option>
-                    <option value="orange">橙 🟠</option>
-                    <option value="black" selected>黒 ⚫</option>
-                </select> に変える
-            </div>
-            <div class="block-template" data-type="stamp" data-code="t.stamp()">
-                👣 スタンプをおす
-            </div>
-            <div class="block-template" data-type="clear" data-code="t.clear()">
-                🧹 画面をそうじする
-            </div>
-            <div class="block-template" data-type="penup" data-code="t.penup()">
-                🖊️ ペンをあげる
-            </div>
-            <div class="block-template" data-type="pendown" data-code="t.pendown()">
-                🖊️ ペンをさげる
-            </div>
-            <div class="block-template" data-type="pensize" data-code="t.pensize({size})">
-                📏 ペンの太さ <select class="block-select" data-param="size">
-                    <option value="1" selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                </select>
-            </div>
-            <div class="block-template" data-type="home" data-code="t.home()">
-                🏠 ホームに戻る
-            </div>
-            <div class="block-template" data-type="backward" data-code="t.backward({distance})">
-                🔙 後ろに <select class="block-select" data-param="distance">
-                    <option value="10">10歩</option>
-                    <option value="20">20歩</option>
-                    <option value="50" selected>50歩</option>
-                    <option value="100">100歩</option>
-                    <option value="150">150歩</option>
-                </select> さがる
-            </div>
-            <div class="palette-category">🌟 テンプレート</div>
-            <div class="block-template" data-type="template"
-                data-algorithm='[{"type":"loop_start","val":{"count":"4"}},{"type":"forward","val":{"distance":"100"}},{"type":"left","val":{"angle":"90"}},{"type":"loop_end","val":{}}]'>
-                🟦 正方形をかく
-            </div>
-            <div class="block-template" data-type="template"
-                data-algorithm='[{"type":"loop_start","val":{"count":"5"}},{"type":"forward","val":{"distance":"100"}},{"type":"right","val":{"angle":"144"}},{"type":"loop_end","val":{}}]'>
-                ⭐ 星をかく
-            </div>
-            <div class="block-template" data-type="template"
-                data-algorithm='[{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}},{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}},{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}},{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}},{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}},{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}}]'>
-                🌸 お花をかく
-            </div>
+                <div class="palette-category">🖊️ 特殊</div>
+                <div class="block-template" data-type="color" data-code="t.color('{color}')">
+                    🎨 色を <select class="block-select" data-param="color">
+                        <option value="red">赤 🔴</option>
+                        <option value="blue">青 🔵</option>
+                        <option value="green">緑 🟢</option>
+                        <option value="yellow">黄 🟡</option>
+                        <option value="purple">紫 🟣</option>
+                        <option value="pink">桃 🩷</option>
+                        <option value="orange">橙 🟠</option>
+                        <option value="black" selected>黒 ⚫</option>
+                    </select> に変える
+                </div>
+                <div class="block-template" data-type="stamp" data-code="t.stamp()">
+                    👣 スタンプをおす
+                </div>
+                <div class="block-template" data-type="clear" data-code="t.clear()">
+                    🧹 画面をそうじする
+                </div>
+                <div class="block-template" data-type="penup" data-code="t.penup()">
+                    🖊️ ペンをあげる
+                </div>
+                <div class="block-template" data-type="pendown" data-code="t.pendown()">
+                    🖊️ ペンをさげる
+                </div>
+                <div class="block-template" data-type="pensize" data-code="t.pensize({size})">
+                    📏 ペンの太さ <select class="block-select" data-param="size">
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+                <div class="block-template" data-type="home" data-code="t.home()">
+                    🏠 ホームに戻る
+                </div>
+                <div class="block-template" data-type="backward" data-code="t.backward({distance})">
+                    🔙 後ろに <select class="block-select" data-param="distance">
+                        <option value="10">10歩</option>
+                        <option value="20">20歩</option>
+                        <option value="50" selected>50歩</option>
+                        <option value="100">100歩</option>
+                        <option value="150">150歩</option>
+                    </select> さがる
+                </div>
+                <div class="palette-category">🌟 テンプレート</div>
+                <div class="block-template" data-type="template"
+                    data-algorithm='[{"type":"loop_start","val":{"count":"4"}},{"type":"forward","val":{"distance":"100"}},{"type":"left","val":{"angle":"90"}},{"type":"loop_end","val":{}}]'>
+                    🟦 正方形をかく
+                </div>
+                <div class="block-template" data-type="template"
+                    data-algorithm='[{"type":"loop_start","val":{"count":"5"}},{"type":"forward","val":{"distance":"100"}},{"type":"right","val":{"angle":"144"}},{"type":"loop_end","val":{}}]'>
+                    ⭐ 星をかく
+                </div>
+                <div class="block-template" data-type="template"
+                    data-algorithm='[{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}},{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}},{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}},{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}},{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}},{"type":"circle","val":{"radius":"40"}},{"type":"left","val":{"angle":"60"}}]'>
+                    🌸 お花をかく
+                </div>
             </div>
         </section>
 
