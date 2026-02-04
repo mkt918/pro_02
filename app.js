@@ -197,7 +197,11 @@ function generatePythonCode() {
             continue;
         }
 
-        code += indent.repeat(indentLevel) + line + '\n';
+        // マルチライン対応：各行にインデントを適用
+        const blockLines = line.split('\n');
+        for (const bl of blockLines) {
+            code += indent.repeat(indentLevel) + bl + '\n';
+        }
 
         if (block.type === 'loop_start') {
             indentLevel++;
