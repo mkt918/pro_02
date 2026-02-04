@@ -168,6 +168,43 @@ class TurtleSimulator {
         this.color = color;
     }
 
+    pensize(size) {
+        this.lineWidth = size;
+    }
+
+    async backward(distance) {
+        // 後退は前進の逆方向
+        const rad = (this.angle + 180) * Math.PI / 180;
+        const targetX = this.x + distance * Math.cos(rad);
+        const targetY = this.y + distance * Math.sin(rad);
+
+        if (!this.checkBoundary(targetX, targetY)) {
+            this.handleError('画面の外に出ようとしたので止まったよ！');
+            return;
+        }
+
+        await this.animateMove(targetX, targetY);
+    }
+
+    async home() {
+        // ペンを上げて中央に戻り、向きを上にする
+        const wasDown = this.penDown;
+        this.penDown = false;
+        this.clearTurtle();
+        this.x = this.width / 2;
+        this.y = this.height / 2;
+        this.angle = -90; // 上向き
+        this.penDown = wasDown;
+        this.drawTurtle();
+    }
+
+    setheading(angle) {
+        // Pythonのタートルに合わせる（0=右、90=上、180=左、270=下）
+        this.clearTurtle();
+        this.angle = -angle; // キャンバス座標に変換
+        this.drawTurtle();
+    }
+
     checkBoundary(x, y) {
         const margin = 5; // マージンを少し狭くして自由に動けるように
         return x >= margin && x <= this.width - margin &&
@@ -184,7 +221,7 @@ class TurtleSimulator {
             this.clearTurtle();
             if (this.penDown) {
                 this.ctx.strokeStyle = this.color;
-                this.ctx.lineWidth = 2;
+                this.ctx.lineWidth = this.lineWidth || 2;
                 this.ctx.lineCap = 'round';
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.x, this.y);
@@ -377,6 +414,17 @@ async function executeCommand(cmd) {
     else if (cmd.includes('color')) {
         const match = cmd.match(/color\(['"](\w+)['"]\)/);
         if (match) turtleSim.setColor(match[1]);
+    }
+    else if (cmd.includes('pensize')) {
+        const match = cmd.match(/pensize\((\d+)\)/);
+        if (match) turtleSim.pensize(parseInt(match[1]));
+    }
+    else if (cmd.includes('home')) {
+        await turtleSim.home();
+    }
+    else if (cmd.includes('setheading')) {
+        const match = cmd.match(/setheading\((\d+)\)/);
+        if (match) turtleSim.setheading(parseInt(match[1]));
     }
 }
 

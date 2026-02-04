@@ -171,6 +171,35 @@
                 <div class="block-template" data-type="pendown" data-code="t.pendown()">
                     🖊️ ペンをさげる
                 </div>
+                <div class="block-template" data-type="pensize" data-code="t.pensize({size})">
+                    📏 ペンの太さ <select class="block-select" data-param="size">
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+                <div class="block-template" data-type="home" data-code="t.home()">
+                    🏠 ホームに戻る
+                </div>
+                <div class="block-template" data-type="backward" data-code="t.backward({distance})">
+                    🔙 後ろに <select class="block-select" data-param="distance">
+                        <option value="10">10歩</option>
+                        <option value="20">20歩</option>
+                        <option value="50" selected>50歩</option>
+                        <option value="100">100歩</option>
+                        <option value="150">150歩</option>
+                    </select> さがる
+                </div>
+                <div class="block-template" data-type="setheading" data-code="t.setheading({angle})">
+                    📐 <select class="block-select" data-param="angle">
+                        <option value="0">→ 右 (0°)</option>
+                        <option value="90" selected>↑ 上 (90°)</option>
+                        <option value="180">← 左 (180°)</option>
+                        <option value="270">↓ 下 (270°)</option>
+                    </select> を向く
+                </div>
                 <div class="palette-category">🌟 テンプレート</div>
                 <div class="block-template" data-type="template"
                     data-algorithm='[{"type":"loop_start","val":{"count":"4"}},{"type":"forward","val":{"distance":"100"}},{"type":"left","val":{"angle":"90"}},{"type":"loop_end","val":{}}]'>
