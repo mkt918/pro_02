@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e1e2f 0%, #2a2a40 100%);
     color: #ffffff;
     overflow: hidden;
     height: 100vh;
@@ -17,254 +17,290 @@ body {
 
 /* ===== ヘッダー ===== */
 .header {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(40, 40, 60, 0.8);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 0.75rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    z-index: 100;
 }
 
 .header-left h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 700;
     margin-bottom: 0.1rem;
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
-    font-size: 0.8rem;
-    opacity: 0.9;
+    font-size: 0.75rem;
+    opacity: 0.7;
 }
 
 .header-right {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+/* 速度コントロール */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.speed-control span {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+#globalSpeed {
+    width: 80px;
+    cursor: pointer;
 }
 
 /* ===== ボタン ===== */
 .btn {
-    padding: 0.6rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 700;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    filter: brightness(1.1);
 }
 
 .btn-run {
-    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    background: linear-gradient(135deg, #00b09b, #96c93d);
     color: white;
 }
 
 .btn-reset {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    color: #c0392b;
 }
 
 /* ===== メインコンテナ ===== */
 .main-container {
     display: flex;
     flex: 1;
-    gap: 0.75rem;
-    padding: 0.75rem;
+    gap: 0.5rem;
+    padding: 0.5rem;
     overflow: hidden;
+    background: #1a1a2e;
 }
 
 /* ===== カラム ===== */
 .column {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     padding: 0.75rem;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 .column-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.3rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: #4facfe;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 4px solid #4facfe;
+    padding-left: 0.6rem;
 }
 
 .column-blocks {
-    flex: 0 0 25%;
+    flex: 0 0 250px;
 }
 
 .column-program {
-    flex: 0 0 35%;
+    flex: 1;
 }
 
 .column-canvas {
-    flex: 0 0 40%;
+    flex: 0 0 420px;
 }
 
 /* ===== パレット ===== */
 .palette {
     flex: 1;
     overflow-y: auto;
-    padding-right: 0.5rem;
+    padding-right: 4px;
 }
 
 .palette-category {
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin: 0.75rem 0 0.3rem 0;
-    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.75rem;
+    font-weight: 800;
+    margin: 0.8rem 0 0.4rem 0;
+    color: #888;
 }
 
-.palette-category:first-child {
-    margin-top: 0;
-}
-
-/* ===== ブロックテンプレート ===== */
-.block-template {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: #1a1a2e;
-    padding: 0.5rem 0.75rem;
+/* ===== ブロックテンプレート & プログラムブロック共通 ===== */
+.block-template,
+.program-block {
+    padding: 0.5rem 0.8rem;
     border-radius: 8px;
     margin-bottom: 0.4rem;
-    cursor: grab;
     font-size: 0.85rem;
-    font-weight: 500;
-    transition: transform 0.2s, box-shadow 0.2s;
+    font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    flex-wrap: wrap;
+    gap: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: grab;
+    transition: transform 0.1s;
+    user-select: none;
 }
 
 .block-template:hover {
     transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
-.block-template:active {
-    cursor: grabbing;
-}
-
-.block-template[data-type="start"] {
-    background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
-}
-
-.loop-block {
-    background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+/* 種類別色分け */
+[data-type="start"] {
+    background: linear-gradient(90deg, #11998e, #38ef7d);
     color: white;
 }
 
-.loop-end-block {
-    background: linear-gradient(135deg, #9333ea 0%, #c026d3 100%);
+[data-type="forward"],
+[data-type="backward"],
+[data-type="circle"] {
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    color: #002d4d;
+}
+
+[data-type="right"],
+[data-type="left"] {
+    background: linear-gradient(90deg, #f093fb, #f5576c);
     color: white;
+}
+
+[data-type="loop_start"],
+[data-type="loop_end"] {
+    background: linear-gradient(90deg, #a855f7, #d946ef);
+    color: white;
+}
+
+[data-type="color"],
+[data-type="speed"],
+[data-type="stamp"],
+[data-type="clear"],
+[data-type="penup"],
+[data-type="pendown"] {
+    background: linear-gradient(90deg, #f6d365, #fda085);
+    color: #5a3d00;
 }
 
 .block-select {
     background: rgba(255, 255, 255, 0.9);
     border: none;
     border-radius: 4px;
-    padding: 0.2rem 0.4rem;
+    padding: 0.1rem 0.3rem;
     font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
+    font-weight: 800;
     color: #333;
 }
 
 /* ===== プログラムエリア ===== */
 .program-area {
     flex: 1;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    padding: 0.75rem;
-    min-height: 150px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 1rem;
     overflow-y: auto;
-    margin-bottom: 0.5rem;
-}
-
-.drop-hint {
-    color: #999;
-    font-size: 0.9rem;
-    text-align: center;
-    padding: 2rem;
+    border: 2px dashed rgba(255, 255, 255, 0.1);
 }
 
 .program-block {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: #1a1a2e;
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
-    margin-bottom: 0.3rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
+    cursor: default;
+    /* Sortableがhandleを使う場合はdefault、使わない場合はgrab */
+    width: fit-content;
+    min-width: 200px;
+    position: relative;
 }
 
-.program-block[data-type="start"] {
-    background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
-}
-
-.program-block[data-type="loop_start"],
-.program-block[data-type="loop_end"] {
-    background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
-    color: white;
+.program-block .block-content {
+    cursor: grab;
+    flex: 1;
 }
 
 .program-block .delete-btn {
-    background: rgba(255, 0, 0, 0.7);
+    position: absolute;
+    right: -8px;
+    top: -8px;
+    background: #ff5252;
     color: white;
     border: none;
     border-radius: 50%;
     width: 20px;
     height: 20px;
+    font-size: 10px;
     cursor: pointer;
-    font-size: 0.7rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.program-block .delete-btn:hover {
-    background: red;
+.program-block:hover .delete-btn {
+    opacity: 1;
 }
 
-.indented {
-    margin-left: 1.5rem;
-    border-left: 3px solid #a855f7;
-    padding-left: 0.5rem;
+/* インデント表示の強化 */
+.indented-1 {
+    margin-left: 2rem;
+    border-left: 4px solid rgba(168, 85, 247, 0.6) !important;
+}
+
+.indented-2 {
+    margin-left: 4rem;
+    border-left: 4px solid rgba(168, 85, 247, 0.8) !important;
+}
+
+.indented-3 {
+    margin-left: 6rem;
+    border-left: 4px solid rgba(168, 85, 247, 1.0) !important;
 }
 
 /* ===== コードプレビュー ===== */
 .code-preview-container {
-    background: #2d2d2d;
+    height: 140px;
+    background: #000;
     border-radius: 8px;
-    padding: 0.5rem;
-    max-height: 150px;
-    overflow: auto;
+    padding: 0.6rem;
+    margin-top: 0.5rem;
+    border: 1px solid #333;
 }
 
 .code-preview-container h3 {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
+    color: #666;
     margin-bottom: 0.3rem;
-    color: #aaa;
+    text-transform: uppercase;
 }
 
-.code-preview-container pre {
-    margin: 0;
-    font-family: 'Consolas', 'Monaco', monospace;
-    font-size: 0.8rem;
+#codePreview {
+    font-size: 0.75rem;
     line-height: 1.4;
 }
 
@@ -273,74 +309,52 @@ body {
     background: white;
     border-radius: 8px;
     padding: 0.5rem;
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex: 1;
 }
 
 #turtleCanvas {
-    border: 2px solid #ddd;
+    background: white;
     border-radius: 4px;
-    max-width: 100%;
-    max-height: 100%;
 }
 
 /* ===== コンソール ===== */
 .console {
+    background: #000;
     margin-top: 0.5rem;
-    background: rgba(0, 0, 0, 0.3);
+    padding: 0.6rem;
     border-radius: 8px;
-    padding: 0.5rem;
-    max-height: 80px;
-    overflow-y: auto;
-}
-
-.console-title {
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-bottom: 0.3rem;
+    height: 80px;
+    border: 1px solid #333;
 }
 
 .console-output {
     font-family: 'Consolas', monospace;
     font-size: 0.8rem;
-    line-height: 1.3;
-    color: #e0e0e0;
+    color: #00ff00;
 }
 
 .console-output.error {
-    color: #ff6b6b;
-    font-weight: 600;
+    color: #ff5252;
 }
 
-.console-output.success {
-    color: #51cf66;
-    font-weight: 600;
+.console-output.info {
+    color: #4facfe;
 }
 
-/* ===== スクロールバー ===== */
-::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-}
-
-/* ドラッグ中のスタイル */
+/* Sortable ドラッグ中のスタイル */
 .dragging {
-    opacity: 0.5;
+    opacity: 0.4;
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.2) !important;
 }
 
-.drag-over {
-    background: rgba(255, 255, 200, 0.3);
-    border: 2px dashed #fff;
+.drop-hint {
+    text-align: center;
+    padding-top: 3rem;
+    color: #555;
+    font-style: italic;
+    font-size: 0.9rem;
 }

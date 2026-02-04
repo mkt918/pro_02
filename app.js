@@ -1,124 +1,80 @@
-// ===== メインアプリケーションロジック v2.1 =====
+// ===== メインアプリケーションロジック v2.2 =====
 
 let programBlocks = [];
-let sortable = null;
+let sortableProgram = null;
+let sortablePalette = null;
 
 // 初期化
 document.addEventListener('DOMContentLoaded', function () {
-    initDragAndDrop();
-    initSortable();
+    initUnifiedSortable();
     initEventListeners();
     initTurtleSimulator();
+    syncGlobalSpeed();
 });
 
-// 並び替え機能の初期化
-function initSortable() {
+// SortableJS を使った統合ドラッグ＆ドロップの初期化
+function initUnifiedSortable() {
+    const palette = document.getElementById('palette');
     const programArea = document.getElementById('programArea');
-    sortable = new Sortable(programArea, {
+
+    // パレット側：ここからプログラムエリアへクローン（複製）できるようにする
+    sortablePalette = new Sortable(palette, {
+        group: {
+            name: 'blocks',
+            pull: 'clone', // クローン（元は残す）
+            put: false    // パレットには戻せない
+        },
+        sort: false, // パレット内での並び替えは無効
+        draggable: '.block-template',
+        animation: 150
+    });
+
+    // プログラムエリア側：受け入れと並び替えの両方を担当
+    sortableProgram = new Sortable(programArea, {
+        group: {
+            name: 'blocks',
+            put: true // パレットからの受け入れ許可
+        },
         animation: 150,
         ghostClass: 'dragging',
-        handle: '.block-content', // ブロックの内容部分を掴んで移動
+        draggable: '.block-template, .program-block', // テンプレートもプログラムブロックも対象
+        onAdd: function (evt) {
+            // パレットから新しく追加された場合
+            const itemEl = evt.item;
+            setupNewBlock(itemEl);
+            updatePreviewIfPossible();
+        },
         onEnd: function () {
-            updateProgramBlocks();
-            // 並び替え後にプレビューを更新したければここで
-            const code = generatePythonCode();
-            if (code) {
-                const codePreview = document.getElementById('codePreview');
-                codePreview.textContent = code;
-                Prism.highlightElement(codePreview);
-            }
+            // 並び替えが終わった場合
+            updatePreviewIfPossible();
         }
     });
 }
 
-// ドラッグ＆ドロップの初期化（パレットからプログラムエリアへ）
-function initDragAndDrop() {
-    const templates = document.querySelectorAll('.block-template');
-    const programArea = document.getElementById('programArea');
+// 新しく追加されたブロックのセットアップ
+function setupNewBlock(el) {
+    // テンプレートからプログラム用ブロックへ変換
+    const type = el.dataset.type;
+    const codeTemplate = el.dataset.code;
 
-    templates.forEach(template => {
-        template.setAttribute('draggable', 'true');
-        template.addEventListener('dragstart', function (e) {
-            e.dataTransfer.setData('text/plain', JSON.stringify({
-                type: this.dataset.type,
-                code: this.dataset.code,
-                html: this.innerHTML
-            }));
-            this.classList.add('dragging');
-        });
-        template.addEventListener('dragend', function () {
-            this.classList.remove('dragging');
-        });
-    });
-
-    programArea.addEventListener('dragover', function (e) {
-        e.preventDefault();
-        this.classList.add('drag-over');
-    });
-
-    programArea.addEventListener('dragleave', function () {
-        this.classList.remove('drag-over');
-    });
-
-    programArea.addEventListener('drop', function (e) {
-        e.preventDefault();
-        this.classList.remove('drag-over');
-
-        try {
-            const dataString = e.dataTransfer.getData('text/plain');
-            if (!dataString) return;
-            const data = JSON.parse(dataString);
-            if (data.type) addBlockToProgram(data);
-        } catch (err) {
-            console.error('ドロップエラー:', err);
-        }
-    });
-}
-
-// プログラムにブロックを追加
-function addBlockToProgram(data) {
-    const programArea = document.getElementById('programArea');
-
-    // ヒントテキストを削除
-    const hint = programArea.querySelector('.drop-hint');
-    if (hint) hint.remove();
-
-    // ブロック要素を作成
-    const block = document.createElement('div');
-    block.className = 'program-block';
-    block.dataset.type = data.type;
-    block.dataset.code = data.code;
+    el.classList.remove('block-template');
+    el.classList.add('program-block');
 
     // 入力パラメータの初期値取得
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = data.html;
-    const selects = tempDiv.querySelectorAll('select');
+    const selects = el.querySelectorAll('select');
     const params = {};
     selects.forEach(sel => {
         params[sel.dataset.param] = sel.value;
     });
-    block.dataset.params = JSON.stringify(params);
+    el.dataset.params = JSON.stringify(params);
 
-    // ブロックの内容を設定
+    // ブロックの内容コンテナを構築
+    const content = el.innerHTML;
+    el.innerHTML = '';
+
     const contentSpan = document.createElement('span');
     contentSpan.className = 'block-content';
-
-    // セレクトボックスを含むHTMLを動的に生成
-    let innerHTML = data.html;
-    contentSpan.innerHTML = innerHTML;
-
-    // プログラムエリア内のセレクトボックスに初期値をセットし、変更監視
-    const programSelects = contentSpan.querySelectorAll('select');
-    programSelects.forEach(sel => {
-        const paramName = sel.dataset.param;
-        sel.value = params[paramName];
-        sel.addEventListener('change', function () {
-            const currentParams = JSON.parse(block.dataset.params);
-            currentParams[paramName] = this.value;
-            block.dataset.params = JSON.stringify(currentParams);
-            updatePreviewIfPossible();
-        });
-    });
+    contentSpan.innerHTML = content;
 
     // 削除ボタン
     const deleteBtn = document.createElement('button');
@@ -126,30 +82,66 @@ function addBlockToProgram(data) {
     deleteBtn.textContent = '✕';
     deleteBtn.onclick = function (e) {
         e.stopPropagation();
-        block.remove();
-        updateProgramBlocks();
-        if (programArea.children.length === 0) {
-            programArea.innerHTML = '<p class="drop-hint">← ブロックをドラッグして並べてね！<br>入れた後は上下に入れ替えられるのだ！</p>';
-        }
+        el.remove();
+        checkEmptyHint();
         updatePreviewIfPossible();
     };
 
-    block.appendChild(contentSpan);
-    block.appendChild(deleteBtn);
-    programArea.appendChild(block);
+    el.appendChild(contentSpan);
+    el.appendChild(deleteBtn);
 
-    updateProgramBlocks();
-    updatePreviewIfPossible();
+    // セレクトボックスのイベント監視
+    const programSelects = el.querySelectorAll('select');
+    programSelects.forEach(sel => {
+        const paramName = sel.dataset.param;
+        // 初期値をセット
+        if (params[paramName]) sel.value = params[paramName];
+
+        sel.addEventListener('change', function () {
+            const currentParams = JSON.parse(el.dataset.params);
+            currentParams[paramName] = this.value;
+            el.dataset.params = JSON.stringify(currentParams);
+            updatePreviewIfPossible();
+        });
+    });
+
+    // ヒントを消す
+    const hint = document.querySelector('.drop-hint');
+    if (hint) hint.remove();
+}
+
+// プログラムが空かチェックしてヒントを出す
+function checkEmptyHint() {
+    const programArea = document.getElementById('programArea');
+    if (programArea.querySelectorAll('.program-block').length === 0) {
+        programArea.innerHTML = '<p class="drop-hint">← ブロックをドラッグして並べてね！<br>入れた後は上下に入れ替えられるのだ！</p>';
+    }
 }
 
 // プレビューの自動更新
 function updatePreviewIfPossible() {
     updateProgramBlocks();
     const code = generatePythonCode();
+    const codePreview = document.getElementById('codePreview');
     if (code) {
-        const codePreview = document.getElementById('codePreview');
         codePreview.textContent = code;
         Prism.highlightElement(codePreview);
+    } else {
+        codePreview.textContent = '# RUNボタンを押すと生成されるのだ！';
+    }
+}
+
+// 速度スライダーとの同期
+function syncGlobalSpeed() {
+    const speedSlider = document.getElementById('globalSpeed');
+    if (speedSlider) {
+        speedSlider.addEventListener('input', function () {
+            if (turtleSim) {
+                turtleSim.setSpeed(parseInt(this.value));
+            }
+        });
+        // 初期値反映
+        if (turtleSim) turtleSim.setSpeed(parseInt(speedSlider.value));
     }
 }
 
@@ -167,9 +159,12 @@ function updateProgramBlocks() {
     // インデントの視覚的表現（ループ内）
     let depth = 0;
     programBlocks.forEach(b => {
-        b.element.classList.remove('indented');
+        b.element.classList.remove('indented-1', 'indented-2', 'indented-3');
         if (b.type === 'loop_end') depth = Math.max(0, depth - 1);
-        if (depth > 0) b.element.classList.add('indented');
+        if (depth > 0) {
+            const indentClass = 'indented-' + Math.min(depth, 3);
+            b.element.classList.add(indentClass);
+        }
         if (b.type === 'loop_start') depth++;
     });
 }
@@ -246,10 +241,10 @@ async function runProgram() {
 // リセット
 function resetProgram() {
     if (turtleSim) turtleSim.reset();
-    showConsoleMessage('リセットしたのだ！✨', 'success');
+    showConsoleMessage('リセット完了！✨', 'success');
 }
 
-// コンソール
+// コンソール表示
 function showConsoleMessage(message, type) {
     const consoleOutput = document.getElementById('consoleOutput');
     consoleOutput.textContent = message;
