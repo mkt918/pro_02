@@ -22,18 +22,65 @@ class TurtleSimulator {
         // スプライトキャンバス（タートル表示用）をクリア
         this.spriteCtx.clearRect(0, 0, this.width, this.height);
 
+        // グリッドモードの場合はグリッドを描画
+        if (this.gridMode) {
+            this.drawGrid();
+        }
+
         // タートルの状態を初期化
-        this.x = this.width / 2;
-        this.y = this.height / 2;
+        if (this.gridMode) {
+            // グリッドモード：中央のマスに配置
+            const cellSize = Math.min(this.width, this.height) / this.gridSize;
+            const centerCell = Math.floor(this.gridSize / 2);
+            this.x = centerCell * cellSize + cellSize / 2;
+            this.y = centerCell * cellSize + cellSize / 2;
+        } else {
+            this.x = this.width / 2;
+            this.y = this.height / 2;
+        }
         this.angle = 0;
         this.penDown = true;
         this.color = 'black';
         this.speed = 5;
+        this.lineWidth = 2;
         this.isRunning = false;
         this.hasError = false;
 
         // タートルを描画
         this.drawTurtle();
+    }
+
+    setGridMode(enabled, size = 8) {
+        this.gridMode = enabled;
+        this.gridSize = size;
+        this.reset();
+    }
+
+    drawGrid() {
+        const cellSize = Math.min(this.width, this.height) / this.gridSize;
+        const offsetX = (this.width - cellSize * this.gridSize) / 2;
+        const offsetY = (this.height - cellSize * this.gridSize) / 2;
+
+        this.ctx.strokeStyle = '#ddd';
+        this.ctx.lineWidth = 1;
+
+        // 縦線
+        for (let i = 0; i <= this.gridSize; i++) {
+            const x = offsetX + i * cellSize;
+            this.ctx.beginPath();
+            this.ctx.moveTo(x, offsetY);
+            this.ctx.lineTo(x, offsetY + this.gridSize * cellSize);
+            this.ctx.stroke();
+        }
+
+        // 横線
+        for (let i = 0; i <= this.gridSize; i++) {
+            const y = offsetY + i * cellSize;
+            this.ctx.beginPath();
+            this.ctx.moveTo(offsetX, y);
+            this.ctx.lineTo(offsetX + this.gridSize * cellSize, y);
+            this.ctx.stroke();
+        }
     }
 
     drawTurtle() {
@@ -65,9 +112,17 @@ class TurtleSimulator {
     async forward(distance) {
         if (this.hasError) return;
 
+        let moveDistance = distance;
+
+        // グリッドモードでは1歩=1マス
+        if (this.gridMode) {
+            const cellSize = Math.min(this.width, this.height) / this.gridSize;
+            moveDistance = distance * cellSize;
+        }
+
         const radians = this.angle * Math.PI / 180;
-        const newX = this.x + distance * Math.cos(radians);
-        const newY = this.y + distance * Math.sin(radians);
+        const newX = this.x + moveDistance * Math.cos(radians);
+        const newY = this.y + moveDistance * Math.sin(radians);
 
         // 境界チェック
         if (!this.checkBoundary(newX, newY)) {
@@ -85,14 +140,16 @@ class TurtleSimulator {
 
     right(angle) {
         if (this.hasError) return;
-        // キャンバス座標(Y下向き)では足すと時計回り(右)
-        this.angle = (this.angle + angle) % 360;
+        // グリッドモードでは90度単位に制限
+        const rotateAngle = this.gridMode ? Math.round(angle / 90) * 90 : angle;
+        this.angle = (this.angle + rotateAngle) % 360;
     }
 
     left(angle) {
         if (this.hasError) return;
-        // 引くと反時計回り(左)
-        this.angle = (this.angle - angle + 360) % 360;
+        // グリッドモードでは90度単位に制限
+        const rotateAngle = this.gridMode ? Math.round(angle / 90) * 90 : angle;
+        this.angle = (this.angle - rotateAngle + 360) % 360;
     }
 
     async circle(radius) {

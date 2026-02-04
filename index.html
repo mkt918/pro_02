@@ -27,6 +27,23 @@
             <p class="subtitle">【更新完了】10歩単位の選択肢を再適用したのだ！</p>
         </div>
         <div class="header-right">
+            <div class="mode-control">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="gridModeToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span id="modeLabel">🖼️ 通常モード</span>
+            </div>
+            <div class="grid-size-control" id="gridSizeControl" style="display: none;">
+                <span>📐 マス:</span>
+                <select id="gridSize">
+                    <option value="5">5×5</option>
+                    <option value="6">6×6</option>
+                    <option value="7">7×7</option>
+                    <option value="8" selected>8×8</option>
+                    <option value="10">10×10</option>
+                </select>
+            </div>
             <div class="speed-control">
                 <span>🏃 はやさ:</span>
                 <input type="range" id="globalSpeed" min="0" max="10" value="3">

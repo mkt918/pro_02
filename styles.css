@@ -70,6 +70,89 @@ body {
     cursor: pointer;
 }
 
+/* モード切り替え */
+.mode-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mode-control span {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.grid-size-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.grid-size-control span {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+#gridSize {
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    border: none;
+    font-size: 0.75rem;
+}
+
+/* トグルスイッチ */
+.toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 20px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 20px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked+.toggle-slider {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+input:checked+.toggle-slider:before {
+    transform: translateX(20px);
+}
+
 /* ===== ボタン ===== */
 .btn {
     padding: 0.5rem 1.2rem;

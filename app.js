@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initUnifiedSortable();
     initEventListeners();
     initTurtleSimulator();
+    initGridModeListeners();
     syncGlobalSpeed();
     addInitialBlock(); // 初期ブロックの配置
 });
@@ -296,6 +297,31 @@ async function runProgram() {
 function resetProgram() {
     if (turtleSim) turtleSim.reset();
     showConsoleMessage('リセット完了！✨', 'success');
+}
+
+// グリッドモード切り替え
+function initGridModeListeners() {
+    const toggle = document.getElementById('gridModeToggle');
+    const gridSizeControl = document.getElementById('gridSizeControl');
+    const gridSizeSelect = document.getElementById('gridSize');
+    const modeLabel = document.getElementById('modeLabel');
+
+    toggle.addEventListener('change', function () {
+        const enabled = this.checked;
+        gridSizeControl.style.display = enabled ? 'flex' : 'none';
+        modeLabel.textContent = enabled ? '🎨 マス目モード' : '🖼️ 通常モード';
+
+        if (turtleSim) {
+            const size = parseInt(gridSizeSelect.value);
+            turtleSim.setGridMode(enabled, size);
+        }
+    });
+
+    gridSizeSelect.addEventListener('change', function () {
+        if (turtleSim && toggle.checked) {
+            turtleSim.setGridMode(true, parseInt(this.value));
+        }
+    });
 }
 
 // コンソール表示
