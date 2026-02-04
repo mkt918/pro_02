@@ -17,14 +17,26 @@ function initUnifiedSortable() {
     const palette = document.getElementById('palette');
     const programArea = document.getElementById('programArea');
 
+    // パレット内のブロックをクリックでも追加できるようにする
+    const paletteBlocks = palette.querySelectorAll('.block-template');
+    paletteBlocks.forEach(pBtn => {
+        pBtn.addEventListener('click', function () {
+            const clone = this.cloneNode(true);
+            programArea.appendChild(clone);
+            setupNewBlock(clone);
+            updatePreviewIfPossible();
+        });
+    });
+
     // パレット側：ここからプログラムエリアへクローン（複製）できるようにする
+    // ... (既存のコード)
     sortablePalette = new Sortable(palette, {
         group: {
             name: 'blocks',
-            pull: 'clone', // クローン（元は残す）
-            put: false    // パレットには戻せない
+            pull: 'clone',
+            put: false
         },
-        sort: false, // パレット内での並び替えは無効
+        sort: false,
         draggable: '.block-template',
         animation: 150
     });
@@ -33,19 +45,17 @@ function initUnifiedSortable() {
     sortableProgram = new Sortable(programArea, {
         group: {
             name: 'blocks',
-            put: true // パレットからの受け入れ許可
+            put: true
         },
         animation: 150,
         ghostClass: 'dragging',
-        draggable: '.block-template, .program-block', // テンプレートもプログラムブロックも対象
+        draggable: '.block-template, .program-block',
         onAdd: function (evt) {
-            // パレットから新しく追加された場合
             const itemEl = evt.item;
             setupNewBlock(itemEl);
             updatePreviewIfPossible();
         },
         onEnd: function () {
-            // 並び替えが終わった場合
             updatePreviewIfPossible();
         }
     });
@@ -53,13 +63,22 @@ function initUnifiedSortable() {
 
 // 新しく追加されたブロックのセットアップ
 function setupNewBlock(el) {
-    // テンプレートからプログラム用ブロックへ変換
     const type = el.dataset.type;
-    const codeTemplate = el.dataset.code;
+
+    // テンプレート展開の場合
+    if (type === 'template') {
+        const algorithm = JSON.parse(el.dataset.algorithm || '[]');
+        el.remove(); // テンプレートブロック自身は消す
+        algorithm.forEach(step => {
+            addBlockProgrammatically(step.type, step.val);
+        });
+        checkEmptyHint();
+        return;
+    }
 
     el.classList.remove('block-template');
     el.classList.add('program-block');
-
+    // ...
     // 入力パラメータの初期値取得
     const selects = el.querySelectorAll('select');
     const params = {};
@@ -94,7 +113,6 @@ function setupNewBlock(el) {
     const programSelects = el.querySelectorAll('select');
     programSelects.forEach(sel => {
         const paramName = sel.dataset.param;
-        // 初期値をセット
         if (params[paramName]) sel.value = params[paramName];
 
         sel.addEventListener('change', function () {
@@ -105,9 +123,31 @@ function setupNewBlock(el) {
         });
     });
 
-    // ヒントを消す
     const hint = document.querySelector('.drop-hint');
     if (hint) hint.remove();
+}
+
+// 指定したタイプと値でブロックをプログラム的に追加する
+function addBlockProgrammatically(type, values) {
+    // パレットから対応するテンプレートを探す
+    const palette = document.getElementById('palette');
+    const sourceTemplate = palette.querySelector(`.block-template[data-type="${type}"]`);
+    if (!sourceTemplate) return;
+
+    const clone = sourceTemplate.cloneNode(true);
+    const programArea = document.getElementById('programArea');
+    programArea.appendChild(clone);
+
+    // 値をセット
+    if (values) {
+        const selects = clone.querySelectorAll('select');
+        selects.forEach(sel => {
+            const param = sel.dataset.param;
+            if (values[param]) sel.value = values[param];
+        });
+    }
+
+    setupNewBlock(clone);
 }
 
 // プログラムが空かチェックしてヒントを出す
