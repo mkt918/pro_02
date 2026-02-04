@@ -311,6 +311,9 @@ function initGridModeListeners() {
         gridSizeControl.style.display = enabled ? 'flex' : 'none';
         modeLabel.textContent = enabled ? '🎨 マス目モード' : '🖼️ 通常モード';
 
+        // ブロックの表示を切り替え
+        updateBlockLabelsForGridMode(enabled);
+
         if (turtleSim) {
             const size = parseInt(gridSizeSelect.value);
             turtleSim.setGridMode(enabled, size);
@@ -320,6 +323,27 @@ function initGridModeListeners() {
     gridSizeSelect.addEventListener('change', function () {
         if (turtleSim && toggle.checked) {
             turtleSim.setGridMode(true, parseInt(this.value));
+        }
+    });
+}
+
+// ブロックのラベルをグリッドモード用に更新
+function updateBlockLabelsForGridMode(isGridMode) {
+    const palette = document.getElementById('palette');
+    const blocks = palette.querySelectorAll('.block-template');
+
+    blocks.forEach(block => {
+        const type = block.dataset.type;
+
+        if (type === 'forward' || type === 'backward') {
+            const textNode = Array.from(block.childNodes).find(node => node.nodeType === Node.TEXT_NODE && node.textContent.includes('歩'));
+            if (textNode) {
+                if (isGridMode) {
+                    textNode.textContent = textNode.textContent.replace('歩すすむ', 'マスすすむ').replace('歩さがる', 'マスさがる');
+                } else {
+                    textNode.textContent = textNode.textContent.replace('マスすすむ', '歩すすむ').replace('マスさがる', '歩さがる');
+                }
+            }
         }
     });
 }
