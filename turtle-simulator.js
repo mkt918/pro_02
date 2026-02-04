@@ -39,7 +39,7 @@ class TurtleSimulator {
             this.x = this.width / 2;
             this.y = this.height / 2;
         }
-        this.angle = 0;
+        this.angle = this.gridMode ? 0 : 0;  // グリッドモードは右向き(0度)、通常モードも0度
         this.penDown = true;
         this.color = 'black';
         this.speed = 5;
