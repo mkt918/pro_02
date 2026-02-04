@@ -130,7 +130,7 @@ body {
 }
 
 .column-blocks {
-    flex: 0 0 250px;
+    flex: 0 0 350px;
 }
 
 .column-program {
@@ -138,7 +138,7 @@ body {
 }
 
 .column-canvas {
-    flex: 0 0 420px;
+    flex: 0 0 650px;
 }
 
 /* ===== パレット ===== */
