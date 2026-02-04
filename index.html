@@ -231,13 +231,22 @@
 
         <!-- Middle Column: Program Area -->
         <section class="column column-program">
-            <h2 class="column-title">📝 プログラム (並び替えOK)</h2>
-            <div id="programArea" class="program-area">
-                <p class="drop-hint">← ブロックをドラッグして並べてね！<br>入れた後は上下に入れ替えられるのだ！</p>
+            <div class="program-header">
+                <h2 class="column-title">📝 プログラム</h2>
+                <div class="program-tabs">
+                    <button class="tab-btn active" data-tab="blocks">🧩 ブロック</button>
+                    <button class="tab-btn" data-tab="code">🐍 コード</button>
+                </div>
             </div>
-            <div class="code-preview-container">
-                <h3>🐍 Pythonコード</h3>
-                <pre><code id="codePreview" class="language-python"># RUNを押すと生成されるのだ！</code></pre>
+            <div id="blocksTab" class="tab-content active">
+                <div id="programArea" class="program-area">
+                    <p class="drop-hint">← ブロックをドラッグして並べてね！<br>入れた後は上下に入れ替えられるのだ！</p>
+                </div>
+            </div>
+            <div id="codeTab" class="tab-content">
+                <div class="code-preview-container">
+                    <pre><code id="codePreview" class="language-python"># RUNを押すと生成されるのだ！</code></pre>
+                </div>
             </div>
         </section>
 

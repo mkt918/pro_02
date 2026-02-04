@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initEventListeners();
     initTurtleSimulator();
     initGridModeListeners();
+    initProgramTabs();
     syncGlobalSpeed();
     addInitialBlock(); // 初期ブロックの配置
 });
@@ -345,6 +346,34 @@ function updateBlockLabelsForGridMode(isGridMode) {
                 }
             }
         }
+    });
+}
+
+// プログラムタブの切り替え
+function initProgramTabs() {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const targetTab = this.dataset.tab;
+
+            // すべてのタブボタンとコンテンツから active を削除
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // クリックされたタブをアクティブに
+            this.classList.add('active');
+            const targetContent = document.getElementById(targetTab + 'Tab');
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+
+            // コードタブに切り替えた時はコードを更新
+            if (targetTab === 'code') {
+                updatePreviewIfPossible();
+            }
+        });
     });
 }
 
