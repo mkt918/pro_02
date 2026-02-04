@@ -309,7 +309,7 @@ function initGridModeListeners() {
     toggle.addEventListener('change', function () {
         const enabled = this.checked;
         gridSizeControl.style.display = enabled ? 'flex' : 'none';
-        modeLabel.textContent = enabled ? '🎨 マス目モード' : '🖼️ 通常モード';
+        modeLabel.textContent = enabled ? '🎨 マス目モード' : '✏️ フリーハンドモード';
 
         // ブロックの表示を切り替え
         updateBlockLabelsForGridMode(enabled);

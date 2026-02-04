@@ -29,11 +29,12 @@ class TurtleSimulator {
 
         // タートルの状態を初期化
         if (this.gridMode) {
-            // グリッドモード：中央のマスに配置
+            // グリッドモード：左上のセル(A1)に配置
             const cellSize = Math.min(this.width, this.height) / this.gridSize;
-            const centerCell = Math.floor(this.gridSize / 2);
-            this.x = centerCell * cellSize + cellSize / 2;
-            this.y = centerCell * cellSize + cellSize / 2;
+            const offsetX = (this.width - cellSize * this.gridSize) / 2;
+            const offsetY = (this.height - cellSize * this.gridSize) / 2;
+            this.x = offsetX + cellSize / 2;
+            this.y = offsetY + cellSize / 2;
         } else {
             this.x = this.width / 2;
             this.y = this.height / 2;
