@@ -1,4 +1,4 @@
-// ===== タートルシミュレーター =====
+// ===== タートルシミュレーター v2.3 (2026-02-04-1204) =====
 
 class TurtleSimulator {
     constructor(canvasId) {
