@@ -10,26 +10,36 @@ document.addEventListener('DOMContentLoaded', function () {
     initEventListeners();
     initTurtleSimulator();
     syncGlobalSpeed();
+    addInitialBlock(); // 初期ブロックの配置
 });
+
+// 初期ブロック（プログラム開始）を配置する
+function addInitialBlock() {
+    const programArea = document.getElementById('programArea');
+    if (programArea.querySelectorAll('.program-block').length === 0) {
+        addBlockProgrammatically('start');
+        updatePreviewIfPossible();
+    }
+}
 
 // SortableJS を使った統合ドラッグ＆ドロップの初期化
 function initUnifiedSortable() {
     const palette = document.getElementById('palette');
     const programArea = document.getElementById('programArea');
 
-    // パレット内のブロックをクリックでも追加できるようにする
-    const paletteBlocks = palette.querySelectorAll('.block-template');
-    paletteBlocks.forEach(pBtn => {
-        pBtn.addEventListener('click', function () {
-            const clone = this.cloneNode(true);
+    // パレット内のブロックをクリックでも追加できるようにする（イベント委譲）
+    palette.addEventListener('click', function (e) {
+        const target = e.target.closest('.block-template');
+        // パレット内にあるテンプレートブロックのみを対象とする
+        if (target && target.parentElement === palette) {
+            const clone = target.cloneNode(true);
             programArea.appendChild(clone);
             setupNewBlock(clone);
             updatePreviewIfPossible();
-        });
+        }
     });
 
     // パレット側：ここからプログラムエリアへクローン（複製）できるようにする
-    // ... (既存のコード)
     sortablePalette = new Sortable(palette, {
         group: {
             name: 'blocks',

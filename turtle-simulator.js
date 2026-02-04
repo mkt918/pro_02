@@ -1,9 +1,11 @@
 // ===== タートルシミュレーター v2.3 (2026-02-04-1204) =====
 
 class TurtleSimulator {
-    constructor(canvasId) {
+    constructor(canvasId, spriteCanvasId) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
+        this.spriteCanvas = document.getElementById(spriteCanvasId);
+        this.spriteCtx = this.spriteCanvas.getContext('2d');
         this.width = this.canvas.width;
         this.height = this.canvas.height;
 
@@ -12,20 +14,21 @@ class TurtleSimulator {
     }
 
     reset() {
-        // キャンバスをクリア
+        // メインキャンバス（描画用）をクリア
         this.ctx.clearRect(0, 0, this.width, this.height);
-
-        // 背景を白に
         this.ctx.fillStyle = '#ffffff';
         this.ctx.fillRect(0, 0, this.width, this.height);
+
+        // スプライトキャンバス（タートル表示用）をクリア
+        this.spriteCtx.clearRect(0, 0, this.width, this.height);
 
         // タートルの状態を初期化
         this.x = this.width / 2;
         this.y = this.height / 2;
-        this.angle = 0; // 0度 = 右向き
+        this.angle = 0;
         this.penDown = true;
         this.color = 'black';
-        this.speed = 5; // アニメーション速度（ミリ秒）
+        this.speed = 5;
         this.isRunning = false;
         this.hasError = false;
 
@@ -35,43 +38,28 @@ class TurtleSimulator {
 
     drawTurtle() {
         const size = 15;
-        this.ctx.save();
-        this.ctx.translate(this.x, this.y);
-        // キャンバス座標(Y下向き)では正の回転が時計回り
-        this.ctx.rotate(this.angle * Math.PI / 180);
+        this.spriteCtx.save();
+        this.spriteCtx.translate(this.x, this.y);
+        this.spriteCtx.rotate(this.angle * Math.PI / 180);
 
-        // タートルの形（右向きの三角形）
-        this.ctx.fillStyle = '#4CAF50';
-        this.ctx.strokeStyle = '#2E7D32';
-        this.ctx.lineWidth = 2;
+        this.spriteCtx.fillStyle = '#4CAF50';
+        this.spriteCtx.strokeStyle = '#2E7D32';
+        this.spriteCtx.lineWidth = 2;
 
-        this.ctx.beginPath();
-        this.ctx.moveTo(size, 0); // 先端（右）
-        this.ctx.lineTo(-size * 0.7, -size * 0.7); // 後端（左上）
-        this.ctx.lineTo(-size * 0.7, size * 0.7); // 後端（左下）
-        this.ctx.closePath();
-        this.ctx.fill();
-        this.ctx.stroke();
+        this.spriteCtx.beginPath();
+        this.spriteCtx.moveTo(size, 0);
+        this.spriteCtx.lineTo(-size * 0.7, -size * 0.7);
+        this.spriteCtx.lineTo(-size * 0.7, size * 0.7);
+        this.spriteCtx.closePath();
+        this.spriteCtx.fill();
+        this.spriteCtx.stroke();
 
-        this.ctx.restore();
+        this.spriteCtx.restore();
     }
 
     clearTurtle() {
-        // タートルの周囲をクリア（再描画のため）
-        const size = 30; // 以前より少し大きく
-        this.ctx.save();
-        this.ctx.globalCompositeOperation = 'destination-out';
-        this.ctx.beginPath();
-        this.ctx.arc(this.x, this.y, size, 0, Math.PI * 2);
-        this.ctx.fill();
-        this.ctx.restore();
-
-        // 消した部分を白で塗り直す（背景が白の場合）
-        this.ctx.save();
-        this.ctx.fillStyle = 'white';
-        this.ctx.globalCompositeOperation = 'destination-over';
-        this.ctx.fillRect(this.x - size, this.y - size, size * 2, size * 2);
-        this.ctx.restore();
+        // スプライトレイヤーのみを全クリア
+        this.spriteCtx.clearRect(0, 0, this.width, this.height);
     }
 
     async forward(distance) {
@@ -129,7 +117,7 @@ class TurtleSimulator {
     stamp() {
         if (this.hasError) return;
 
-        // 現在の位置と向きでスタンプ（半透明のタートル）をキャンバスに直接描画
+        // メインキャンバスに描画（足跡として残す）
         const size = 15;
         this.ctx.save();
         this.ctx.translate(this.x, this.y);
@@ -227,7 +215,7 @@ let turtleSim = null;
 
 // 初期化
 function initTurtleSimulator() {
-    turtleSim = new TurtleSimulator('turtleCanvas');
+    turtleSim = new TurtleSimulator('turtleCanvas', 'spriteCanvas');
 }
 
 // コマンド実行
