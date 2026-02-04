@@ -112,26 +112,55 @@ class TurtleSimulator {
     async forward(distance) {
         if (this.hasError) return;
 
-        let moveDistance = distance;
-
-        // グリッドモードでは1歩=1マス
         if (this.gridMode) {
+            // グリッドモード：セル単位で移動
             const cellSize = Math.min(this.width, this.height) / this.gridSize;
-            moveDistance = distance * cellSize;
+            const offsetX = (this.width - cellSize * this.gridSize) / 2;
+            const offsetY = (this.height - cellSize * this.gridSize) / 2;
+
+            // 現在の方向に基づいて移動（0=右, 90=下, 180=左, 270=上）
+            const direction = Math.round(this.angle / 90) % 4;
+            let dx = 0, dy = 0;
+
+            switch (direction) {
+                case 0: dx = distance; break;  // 右
+                case 1: dy = distance; break;  // 下
+                case 2: dx = -distance; break; // 左
+                case 3: dy = -distance; break; // 上
+            }
+
+            // 現在のセル位置を計算
+            const currentCellX = Math.round((this.x - offsetX - cellSize / 2) / cellSize);
+            const currentCellY = Math.round((this.y - offsetY - cellSize / 2) / cellSize);
+            const targetCellX = currentCellX + dx;
+            const targetCellY = currentCellY + dy;
+
+            // 境界チェック
+            if (targetCellX < 0 || targetCellX >= this.gridSize ||
+                targetCellY < 0 || targetCellY >= this.gridSize) {
+                this.hasError = true;
+                throw new Error('グリッドの外には出られないのだ！🚫');
+            }
+
+            // 目標位置（ピクセル座標）
+            const targetX = offsetX + targetCellX * cellSize + cellSize / 2;
+            const targetY = offsetY + targetCellY * cellSize + cellSize / 2;
+
+            // セル単位でアニメーション
+            await this.animateCellMove(targetX, targetY);
+        } else {
+            // 通常モード：ピクセル単位で移動
+            const radians = this.angle * Math.PI / 180;
+            const newX = this.x + distance * Math.cos(radians);
+            const newY = this.y + distance * Math.sin(radians);
+
+            if (!this.checkBoundary(newX, newY)) {
+                this.hasError = true;
+                throw new Error('画面の外には出られないのだ！🚫');
+            }
+
+            await this.animateMove(newX, newY);
         }
-
-        const radians = this.angle * Math.PI / 180;
-        const newX = this.x + moveDistance * Math.cos(radians);
-        const newY = this.y + moveDistance * Math.sin(radians);
-
-        // 境界チェック
-        if (!this.checkBoundary(newX, newY)) {
-            this.hasError = true;
-            throw new Error('画面の外には出られないのだ！🚫');
-        }
-
-        // アニメーション
-        await this.animateMove(newX, newY);
     }
 
     async backward(distance) {
@@ -301,6 +330,29 @@ class TurtleSimulator {
 
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async animateCellMove(targetX, targetY) {
+        // グリッドモード用：セル単位でカクカク動く
+        this.clearTurtle();
+
+        if (this.penDown) {
+            this.ctx.strokeStyle = this.color;
+            this.ctx.lineWidth = this.lineWidth || 2;
+            this.ctx.lineCap = 'round';
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.x, this.y);
+            this.x = targetX;
+            this.y = targetY;
+            this.ctx.lineTo(this.x, this.y);
+            this.ctx.stroke();
+        } else {
+            this.x = targetX;
+            this.y = targetY;
+        }
+
+        this.drawTurtle();
+        await this.sleep(this.speed * 10); // グリッドモードは少し遅めに
     }
 }
 
