@@ -40,7 +40,7 @@ class TurtleSimulator {
             this.y = this.height / 2;
         }
         this.angle = this.gridMode ? 0 : 0;  // グリッドモードは右向き(0度)、通常モードも0度
-        this.penDown = true;
+        this.penDown = this.gridMode ? false : true; // グリッドモードは上げ、通常モードは下げ
         this.color = 'black';
         this.speed = 5;
         this.lineWidth = 2;
@@ -547,7 +547,7 @@ async function executeCommand(cmd) {
     else if (cmd.includes('pendown')) {
         turtleSim.pendown();
     }
-    else if (cmd.includes('マスを塗る')) {
+    else if (cmd.includes('fillcell')) {
         turtleSim.fillCell();
     }
     else if (cmd.includes('color')) {

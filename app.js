@@ -154,9 +154,22 @@ function setupNewBlock(el) {
 
 // 指定したタイプと値でブロックをプログラム的に追加する
 function addBlockProgrammatically(type, values) {
-    // パレットから対応するテンプレートを探す
-    const palette = document.getElementById('palette');
-    const sourceTemplate = palette.querySelector(`.block-template[data-type="${type}"]`);
+    // 現在表示されているパレット、または両方のパレットからテンプレートを探す
+    const freePalette = document.getElementById('freePalette');
+    const gridPalette = document.getElementById('gridPalette');
+    let sourceTemplate = null;
+
+    if (freePalette && freePalette.style.display !== 'none') {
+        sourceTemplate = freePalette.querySelector(`.block-template[data-type="${type}"]`);
+    }
+    if (!sourceTemplate && gridPalette && gridPalette.style.display !== 'none') {
+        sourceTemplate = gridPalette.querySelector(`.block-template[data-type="${type}"]`);
+    }
+    // もし表示中のパレットに見つからなければ、どちらかにある方を使う
+    if (!sourceTemplate) {
+        sourceTemplate = document.querySelector(`.palette .block-template[data-type="${type}"]`);
+    }
+
     if (!sourceTemplate) return;
 
     const clone = sourceTemplate.cloneNode(true);
@@ -310,6 +323,13 @@ async function runProgram() {
 // リセット
 function resetProgram() {
     if (turtleSim) turtleSim.reset();
+
+    // プログラムエリアをクリアして初期ブロックを再配置
+    const programArea = document.getElementById('programArea');
+    programArea.innerHTML = '';
+    addInitialBlock();
+    updatePreviewIfPossible();
+
     showConsoleMessage('リセット完了！✨', 'success');
 }
 
