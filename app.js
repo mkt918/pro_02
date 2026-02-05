@@ -26,34 +26,47 @@ function addInitialBlock() {
 
 // SortableJS を使った統合ドラッグ＆ドロップの初期化
 function initUnifiedSortable() {
-    const palette = document.getElementById('palette');
+    const freePalette = document.getElementById('freePalette');
+    const gridPalette = document.getElementById('gridPalette');
     const programArea = document.getElementById('programArea');
 
-    // パレット内のブロックをクリックでも追加できるようにする（イベント委譲）
-    palette.addEventListener('click', function (e) {
-        const target = e.target.closest('.block-template');
-        // パレット内にあるテンプレートブロックのみを対象とする
-        if (target && target.parentElement === palette) {
-            const clone = target.cloneNode(true);
-            programArea.appendChild(clone);
-            setupNewBlock(clone);
-            updatePreviewIfPossible();
-        }
-    });
+    // 両方のパレットに対してセットアップ
+    [freePalette, gridPalette].forEach(palette => {
+        if (!palette) return;
 
-    // パレット側：ここからプログラムエリアへクローン（複製）できるようにする
-    sortablePalette = new Sortable(palette, {
-        group: {
-            name: 'blocks',
-            pull: 'clone',
-            put: false
-        },
-        sort: false,
-        draggable: '.block-template',
-        animation: 150
+        // 既存のSortableを破棄
+        if (palette._sortable) {
+            palette._sortable.destroy();
+        }
+
+        // パレット内のブロックをクリックでも追加できるようにする
+        palette.onclick = function (e) {
+            const target = e.target.closest('.block-template');
+            if (target && palette.contains(target)) {
+                const clone = target.cloneNode(true);
+                programArea.appendChild(clone);
+                setupNewBlock(clone);
+                updatePreviewIfPossible();
+            }
+        };
+
+        // パレット側：ここからプログラムエリアへクローン（複製）できるようにする
+        palette._sortable = new Sortable(palette, {
+            group: {
+                name: 'blocks',
+                pull: 'clone',
+                put: false
+            },
+            sort: false,
+            draggable: '.block-template',
+            animation: 150
+        });
     });
 
     // プログラムエリア側：受け入れと並び替えの両方を担当
+    if (sortableProgram) {
+        sortableProgram.destroy();
+    }
     sortableProgram = new Sortable(programArea, {
         group: {
             name: 'blocks',
@@ -344,9 +357,10 @@ function initGridModeListeners() {
     });
 }
 
-// ブロックのラベルをグリッドモード用に更新
+// ブロックのラベルをグリッドモード用に更新（フリーハンドパレット用、現在は別パレットなので不要だが互換性のため残す）
 function updateBlockLabelsForGridMode(isGridMode) {
-    const palette = document.getElementById('palette');
+    const palette = document.getElementById('freePalette');
+    if (!palette) return;
     const blocks = palette.querySelectorAll('.block-template');
 
     blocks.forEach(block => {
