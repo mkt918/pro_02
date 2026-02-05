@@ -251,6 +251,32 @@ class TurtleSimulator {
         this.penDown = true;
     }
 
+    fillCell() {
+        if (this.hasError) return;
+        if (!this.gridMode) {
+            console.warn('fillCell() はグリッドモードでのみ使用できます');
+            return;
+        }
+
+        const cellSize = Math.min(this.width, this.height) / this.gridSize;
+        const offsetX = (this.width - cellSize * this.gridSize) / 2;
+        const offsetY = (this.height - cellSize * this.gridSize) / 2;
+
+        // 現在のセル位置を計算
+        const currentCellX = Math.round((this.x - offsetX - cellSize / 2) / cellSize);
+        const currentCellY = Math.round((this.y - offsetY - cellSize / 2) / cellSize);
+
+        // セルを塗りつぶす
+        const cellX = offsetX + currentCellX * cellSize;
+        const cellY = offsetY + currentCellY * cellSize;
+
+        this.ctx.fillStyle = this.color;
+        this.ctx.fillRect(cellX, cellY, cellSize, cellSize);
+
+        // タートルを再描画
+        this.drawTurtle();
+    }
+
     setColor(color) {
         this.color = color;
     }
@@ -520,6 +546,9 @@ async function executeCommand(cmd) {
     }
     else if (cmd.includes('pendown')) {
         turtleSim.pendown();
+    }
+    else if (cmd.includes('マスを塗る')) {
+        turtleSim.fillCell();
     }
     else if (cmd.includes('color')) {
         const match = cmd.match(/color\(['"](\w+)['"]\)/);
