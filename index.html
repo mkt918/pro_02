@@ -27,23 +27,6 @@
             <p class="subtitle">【更新完了】10歩単位の選択肢を再適用したのだ！</p>
         </div>
         <div class="header-right">
-            <div class="mode-control">
-                <label class="toggle-switch">
-                    <input type="checkbox" id="gridModeToggle">
-                    <span class="toggle-slider"></span>
-                </label>
-                <span id="modeLabel">✏️ フリーハンドモード</span>
-            </div>
-            <div class="grid-size-control" id="gridSizeControl" style="display: none;">
-                <span>📐 マス:</span>
-                <select id="gridSize">
-                    <option value="5">5×5</option>
-                    <option value="6">6×6</option>
-                    <option value="7">7×7</option>
-                    <option value="8" selected>8×8</option>
-                    <option value="10">10×10</option>
-                </select>
-            </div>
             <div class="speed-control">
                 <span>🏃 はやさ:</span>
                 <input type="range" id="globalSpeed" min="0" max="10" value="3">
@@ -82,16 +65,8 @@
                         <option value="100" selected>100</option>
                     </select> 歩すすむ
                 </div>
-                <div class="block-template" data-type="backward" data-code="t.backward({distance})">
-                    🔙 後ろに <select class="block-select" data-param="distance">
-                        <option value="10">10歩</option>
-                        <option value="20">20歩</option>
-                        <option value="50" selected>50歩</option>
-                        <option value="100">100歩</option>
-                        <option value="150">150歩</option>
-                    </select> さがる
-                </div>
                 <div class="block-template" data-type="home" data-code="t.home()">
+
                     🏠 ホームに戻る
                 </div>
 
@@ -229,16 +204,8 @@
                         <option value="10">10マス</option>
                     </select> 進む
                 </div>
-                <div class="block-template" data-type="backward" data-code="t.backward({distance})">
-                    🔙 <select class="block-select" data-param="distance">
-                        <option value="1" selected>1マス</option>
-                        <option value="2">2マス</option>
-                        <option value="3">3マス</option>
-                        <option value="4">4マス</option>
-                        <option value="5">5マス</option>
-                    </select> 下がる
-                </div>
                 <div class="block-template" data-type="home" data-code="t.home()">
+
                     🏠 A1に戻る
                 </div>
 
@@ -323,7 +290,27 @@
 
         <!-- Right Column: Simulation Canvas -->
         <section class="column column-canvas">
-            <h2 class="column-title">🎨 シミュレーション</h2>
+            <div class="column-header-with-controls">
+                <h2 class="column-title">🎨 シミュレーション</h2>
+                <div class="mode-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="gridModeToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span id="modeLabel">✏️ フリーハンドモード</span>
+                </div>
+                <div class="grid-size-control" id="gridSizeControl" style="display: none;">
+                    <span>📐 マス:</span>
+                    <select id="gridSize">
+                        <option value="5">5×5</option>
+                        <option value="6">6×6</option>
+                        <option value="7">7×7</option>
+                        <option value="8" selected>8×8</option>
+                        <option value="10">10×10</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="canvas-container" style="position: relative;">
                 <canvas id="turtleCanvas" width="630" height="550"
                     style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></canvas>

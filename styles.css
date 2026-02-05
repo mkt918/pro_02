@@ -212,6 +212,25 @@ input:checked+.toggle-slider:before {
     padding-left: 0.6rem;
 }
 
+.column-header-with-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+    gap: 0.5rem;
+}
+
+.column-header-with-controls .column-title {
+    margin-bottom: 0;
+}
+
+.column-header-with-controls .mode-control,
+.column-header-with-controls .grid-size-control {
+    background: rgba(79, 172, 254, 0.1);
+    border: 1px solid rgba(79, 172, 254, 0.2);
+    padding: 0.2rem 0.6rem;
+}
+
 .column-blocks {
     flex: 0 0 350px;
 }
