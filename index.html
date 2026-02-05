@@ -58,22 +58,9 @@
         <!-- Left Column: Block Palette -->
         <section class="column column-blocks">
             <h2 class="column-title">📦 ブロックパレット</h2>
-            <div id="palette" class="palette">
-                <div class="palette-category">🚀 基本</div>
-                <div class="block-template" data-type="start"
-                    data-code="import turtle\nt = turtle.Turtle()\nt.speed(3)">
-                    🚀 プログラム開始
-                </div>
-                <div class="block-template" data-type="speed" data-code="t.speed({val})">
-                    ⚡ はやさを変える <select class="block-select" data-param="val">
-                        <option value="1">1 (おそい)</option>
-                        <option value="3" selected>3 (ふつう)</option>
-                        <option value="6">6 (はやい)</option>
-                        <option value="10">10 (とてもはやい)</option>
-                        <option value="0">0 (しゅんかん)</option>
-                    </select>
-                </div>
 
+            <!-- フリーハンドモード用パレット -->
+            <div id="freePalette" class="palette">
                 <div class="palette-category">🚀 基本</div>
                 <div class="block-template" data-type="start"
                     data-code="import turtle\nt = turtle.Turtle()\nt.speed(3)">
@@ -218,43 +205,138 @@
                     🌸 お花をかく
                 </div>
             </div>
-        </section>
 
-        <!-- Middle Column: Program Area -->
-        <section class="column column-program">
-            <div class="program-header">
-                <h2 class="column-title">📝 プログラム</h2>
-                <div class="program-tabs">
-                    <button class="tab-btn active" data-tab="blocks">🧩 ブロック</button>
-                    <button class="tab-btn" data-tab="code">🐍 コード</button>
+            <!-- グリッドモード用パレット -->
+            <div id="gridPalette" class="palette" style="display: none;">
+                <div class="palette-category">🚀 基本</div>
+                <div class="block-template" data-type="start"
+                    data-code="import turtle\nt = turtle.Turtle()\nt.speed(3)">
+                    🚀 プログラム開始
                 </div>
-            </div>
-            <div id="blocksTab" class="tab-content active">
-                <div id="programArea" class="program-area">
-                    <p class="drop-hint">← ブロックをドラッグして並べてね！<br>入れた後は上下に入れ替えられるのだ！</p>
-                </div>
-            </div>
-            <div id="codeTab" class="tab-content">
-                <div class="code-preview-container">
-                    <pre><code id="codePreview" class="language-python"># RUNを押すと生成されるのだ！</code></pre>
-                </div>
-            </div>
-        </section>
 
-        <!-- Right Column: Simulation Canvas -->
-        <section class="column column-canvas">
-            <h2 class="column-title">🎨 シミュレーション</h2>
-            <div class="canvas-container" style="position: relative;">
-                <canvas id="turtleCanvas" width="630" height="550"
-                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></canvas>
-                <canvas id="spriteCanvas" width="630" height="550"
-                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;"></canvas>
+                <div class="palette-category">🚶 移動（マス単位）</div>
+                <div class="block-template" data-type="forward" data-code="t.forward({distance})">
+                    ⬆️ <select class="block-select" data-param="distance">
+                        <option value="1" selected>1マス</option>
+                        <option value="2">2マス</option>
+                        <option value="3">3マス</option>
+                        <option value="4">4マス</option>
+                        <option value="5">5マス</option>
+                        <option value="6">6マス</option>
+                        <option value="7">7マス</option>
+                        <option value="8">8マス</option>
+                        <option value="9">9マス</option>
+                        <option value="10">10マス</option>
+                    </select> 進む
+                </div>
+                <div class="block-template" data-type="backward" data-code="t.backward({distance})">
+                    🔙 <select class="block-select" data-param="distance">
+                        <option value="1" selected>1マス</option>
+                        <option value="2">2マス</option>
+                        <option value="3">3マス</option>
+                        <option value="4">4マス</option>
+                        <option value="5">5マス</option>
+                    </select> 下がる
+                </div>
+                <div class="block-template" data-type="home" data-code="t.home()">
+                    🏠 A1に戻る
+                </div>
+
+                <div class="palette-category">🔄 回転（90度固定）</div>
+                <div class="block-template" data-type="right" data-code="t.right(90)">
+                    ↪️ 右に90度回る
+                </div>
+                <div class="block-template" data-type="left" data-code="t.left(90)">
+                    ↩️ 左に90度回る
+                </div>
+
+                <div class="palette-category">🖊️ ペン</div>
+                <div class="block-template" data-type="penup" data-code="t.penup()">
+                    🖊️ ペンをあげる
+                </div>
+                <div class="block-template" data-type="pendown" data-code="t.pendown()">
+                    🖊️ ペンをさげる
+                </div>
+                <div class="block-template" data-type="color" data-code="t.color('{color}')">
+                    🎨 色 <select class="block-select" data-param="color">
+                        <option value="red">赤🔴</option>
+                        <option value="blue">青🔵</option>
+                        <option value="green">緑🟢</option>
+                        <option value="yellow">黄🟡</option>
+                        <option value="purple">紫🟣</option>
+                        <option value="pink">桃🩷</option>
+                        <option value="orange">橙🟠</option>
+                        <option value="black" selected>黒⚫</option>
+                    </select>
+                </div>
+                <div class="block-template" data-type="pensize" data-code="t.pensize({size})">
+                    📏 太さ <select class="block-select" data-param="size">
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="palette-category">🔁 ループ</div>
+                <div class="block-template loop-block" data-type="loop_start" data-code="for i in range({count}):">
+                    🔁 <select class="block-select" data-param="count">
+                        <option value="2">2回</option>
+                        <option value="3">3回</option>
+                        <option value="4" selected>4回</option>
+                        <option value="5">5回</option>
+                        <option value="8">8回</option>
+                        <option value="10">10回</option>
+                    </select> くりかえす ↓
+                </div>
+                <div class="block-template loop-end-block" data-type="loop_end" data-code="# ループ終わり">
+                    🔁 ↑ ここまで
+                </div>
+
+                <div class="palette-category">🧹 その他</div>
+                <div class="block-template" data-type="clear" data-code="t.clear()">
+                    🧹 画面をそうじする
+                </div>
+                <div class="block-template" data-type="stamp" data-code="t.stamp()">
+                    👣 スタンプをおす
+                </div>
             </div>
-            <div id="console" class="console">
-                <div class="console-title">📋 コンソール</div>
-                <div id="consoleOutput" class="console-output">準備完了なのだ！🚀</div>
-            </div>
-        </section>
+
+            <!-- Middle Column: Program Area -->
+            <section class="column column-program">
+                <div class="program-header">
+                    <h2 class="column-title">📝 プログラム</h2>
+                    <div class="program-tabs">
+                        <button class="tab-btn active" data-tab="blocks">🧩 ブロック</button>
+                        <button class="tab-btn" data-tab="code">🐍 コード</button>
+                    </div>
+                </div>
+                <div id="blocksTab" class="tab-content active">
+                    <div id="programArea" class="program-area">
+                        <p class="drop-hint">← ブロックをドラッグして並べてね！<br>入れた後は上下に入れ替えられるのだ！</p>
+                    </div>
+                </div>
+                <div id="codeTab" class="tab-content">
+                    <div class="code-preview-container">
+                        <pre><code id="codePreview" class="language-python"># RUNを押すと生成されるのだ！</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Column: Simulation Canvas -->
+            <section class="column column-canvas">
+                <h2 class="column-title">🎨 シミュレーション</h2>
+                <div class="canvas-container" style="position: relative;">
+                    <canvas id="turtleCanvas" width="630" height="550"
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></canvas>
+                    <canvas id="spriteCanvas" width="630" height="550"
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;"></canvas>
+                </div>
+                <div id="console" class="console">
+                    <div class="console-title">📋 コンソール</div>
+                    <div id="consoleOutput" class="console-output">準備完了なのだ！🚀</div>
+                </div>
+            </section>
     </main>
 
     <!-- Scripts -->

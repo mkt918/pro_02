@@ -306,19 +306,35 @@ function initGridModeListeners() {
     const gridSizeControl = document.getElementById('gridSizeControl');
     const gridSizeSelect = document.getElementById('gridSize');
     const modeLabel = document.getElementById('modeLabel');
+    const freePalette = document.getElementById('freePalette');
+    const gridPalette = document.getElementById('gridPalette');
 
     toggle.addEventListener('change', function () {
         const enabled = this.checked;
         gridSizeControl.style.display = enabled ? 'flex' : 'none';
         modeLabel.textContent = enabled ? '🎨 マス目モード' : '✏️ フリーハンドモード';
 
-        // ブロックの表示を切り替え
-        updateBlockLabelsForGridMode(enabled);
+        // パレットを切り替え
+        if (enabled) {
+            freePalette.style.display = 'none';
+            gridPalette.style.display = 'block';
+        } else {
+            freePalette.style.display = 'block';
+            gridPalette.style.display = 'none';
+        }
+
+        // ブロックの表示を切り替え（フリーハンドモードのみ）
+        if (!enabled) {
+            updateBlockLabelsForGridMode(false);
+        }
 
         if (turtleSim) {
             const size = parseInt(gridSizeSelect.value);
             turtleSim.setGridMode(enabled, size);
         }
+
+        // パレットのSortableを再初期化
+        initUnifiedSortable();
     });
 
     gridSizeSelect.addEventListener('change', function () {
