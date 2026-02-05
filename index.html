@@ -301,42 +301,43 @@
                     👣 スタンプをおす
                 </div>
             </div>
+        </section>
 
-            <!-- Middle Column: Program Area -->
-            <section class="column column-program">
-                <div class="program-header">
-                    <h2 class="column-title">📝 プログラム</h2>
-                    <div class="program-tabs">
-                        <button class="tab-btn active" data-tab="blocks">🧩 ブロック</button>
-                        <button class="tab-btn" data-tab="code">🐍 コード</button>
-                    </div>
+        <!-- Middle Column: Program Area -->
+        <section class="column column-program">
+            <div class="program-header">
+                <h2 class="column-title">📝 プログラム</h2>
+                <div class="program-tabs">
+                    <button class="tab-btn active" data-tab="blocks">🧩 ブロック</button>
+                    <button class="tab-btn" data-tab="code">🐍 コード</button>
                 </div>
-                <div id="blocksTab" class="tab-content active">
-                    <div id="programArea" class="program-area">
-                        <p class="drop-hint">← ブロックをドラッグして並べてね！<br>入れた後は上下に入れ替えられるのだ！</p>
-                    </div>
+            </div>
+            <div id="blocksTab" class="tab-content active">
+                <div id="programArea" class="program-area">
+                    <p class="drop-hint">← ブロックをドラッグして並べてね！<br>入れた後は上下に入れ替えられるのだ！</p>
                 </div>
-                <div id="codeTab" class="tab-content">
-                    <div class="code-preview-container">
-                        <pre><code id="codePreview" class="language-python"># RUNを押すと生成されるのだ！</code></pre>
-                    </div>
+            </div>
+            <div id="codeTab" class="tab-content">
+                <div class="code-preview-container">
+                    <pre><code id="codePreview" class="language-python"># RUNを押すと生成されるのだ！</code></pre>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- Right Column: Simulation Canvas -->
-            <section class="column column-canvas">
-                <h2 class="column-title">🎨 シミュレーション</h2>
-                <div class="canvas-container" style="position: relative;">
-                    <canvas id="turtleCanvas" width="630" height="550"
-                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></canvas>
-                    <canvas id="spriteCanvas" width="630" height="550"
-                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;"></canvas>
-                </div>
-                <div id="console" class="console">
-                    <div class="console-title">📋 コンソール</div>
-                    <div id="consoleOutput" class="console-output">準備完了なのだ！🚀</div>
-                </div>
-            </section>
+        <!-- Right Column: Simulation Canvas -->
+        <section class="column column-canvas">
+            <h2 class="column-title">🎨 シミュレーション</h2>
+            <div class="canvas-container" style="position: relative;">
+                <canvas id="turtleCanvas" width="630" height="550"
+                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></canvas>
+                <canvas id="spriteCanvas" width="630" height="550"
+                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;"></canvas>
+            </div>
+            <div id="console" class="console">
+                <div class="console-title">📋 コンソール</div>
+                <div id="consoleOutput" class="console-output">準備完了なのだ！🚀</div>
+            </div>
+        </section>
     </main>
 
     <!-- Scripts -->
