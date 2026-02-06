@@ -288,13 +288,26 @@ class TurtleSimulator {
     // backwardは既に定義済みなので削除(旧・重複箇所)
 
     async home() {
-        // ペンを上げて中央に戻り、向きを上にする
+        // ペンを上げてホームに戻り、向きをリセット
         const wasDown = this.penDown;
         this.penDown = false;
         this.clearTurtle();
-        this.x = this.width / 2;
-        this.y = this.height / 2;
-        this.angle = -90; // 上向き
+
+        if (this.gridMode) {
+            // グリッドモード：左上のセル(A1)に移動
+            const cellSize = Math.min(this.width, this.height) / this.gridSize;
+            const offsetX = (this.width - cellSize * this.gridSize) / 2;
+            const offsetY = (this.height - cellSize * this.gridSize) / 2;
+            this.x = offsetX + cellSize / 2;
+            this.y = offsetY + cellSize / 2;
+            this.angle = 0; // 右向き
+        } else {
+            // 通常モード：中央に移動
+            this.x = this.width / 2;
+            this.y = this.height / 2;
+            this.angle = -90; // 上向き
+        }
+
         this.penDown = wasDown;
         this.drawTurtle();
     }
