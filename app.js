@@ -316,6 +316,11 @@ function updateProgramBlocks() {
 function initEventListeners() {
     document.getElementById('runBtn').addEventListener('click', runProgram);
     document.getElementById('resetBtn').addEventListener('click', resetProgram);
+    document.getElementById('saveBtn').addEventListener('click', saveToLocalStorage);
+    document.getElementById('loadBtn').addEventListener('click', loadFromLocalStorage);
+    document.getElementById('exportBtn').addEventListener('click', exportToFile);
+    document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
+    document.getElementById('importFile').addEventListener('change', importFromFile);
 }
 
 // Pythonコード生成ロジック

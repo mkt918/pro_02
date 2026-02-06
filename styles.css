@@ -214,6 +214,16 @@ body {
     color: #c0392b;
 }
 
+.btn-save {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: #fff;
+}
+
+.btn-load {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+}
+
 /* ===== メインコンテナ ===== */
 .main-container {
     display: flex;
@@ -323,6 +333,22 @@ body {
     color: white;
     border-color: transparent;
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+.btn-export {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.btn-import {
+    background: #f1f8e9;
+    color: #388e3c;
+}
+
+.btn-export:hover,
+.btn-import:hover {
+    filter: brightness(0.95);
+    border-color: currentColor;
 }
 
 .tab-content {
