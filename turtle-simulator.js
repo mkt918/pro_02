@@ -516,10 +516,10 @@ async function executeCommand(cmd) {
         if (match) turtleSim.left(parseInt(match[1]));
     }
     else if (cmd.includes('circle')) {
-        const match = cmd.match(/circle\((\d+)(?:,\s*(\d+))?\)/);
+        const match = cmd.match(/circle\(([^,\)]+)(?:,\s*([^,\)]+))?\)/);
         if (match) {
-            const radius = parseInt(match[1]);
-            const extent = match[2] ? parseInt(match[2]) : 360;
+            const radius = parseFloat(match[1]);
+            const extent = match[2] ? parseFloat(match[2]) : 360;
             await turtleSim.circle(radius, extent);
         }
     }

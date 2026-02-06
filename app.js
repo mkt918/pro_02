@@ -506,9 +506,75 @@ function initProgramTabs() {
     });
 }
 
-// コンソール表示
-function showConsoleMessage(message, type) {
-    const consoleOutput = document.getElementById('consoleOutput');
-    consoleOutput.textContent = message;
-    consoleOutput.className = 'console-output ' + (type || '');
+// --- 保存・入出力機能 ---
+
+// LocalStorageに保存
+function saveToLocalStorage() {
+    updateProgramBlocks();
+    const data = JSON.stringify(programBlocks);
+    localStorage.setItem('turtle_program', data);
+    showConsoleMessage('ブラウザに保存したのだ！💾', 'success');
+}
+
+// LocalStorageから読込
+function loadFromLocalStorage() {
+    const data = localStorage.getItem('turtle_program');
+    if (!data) {
+        showConsoleMessage('保存されたデータがないのだ！📂', 'error');
+        return;
+    }
+    const blocks = JSON.parse(data);
+    reconstructProgram(blocks);
+    showConsoleMessage('保存データを読み込んだのだ！✨', 'success');
+}
+
+// ファイルに出力 (JSON)
+function exportToFile() {
+    updateProgramBlocks();
+    const data = JSON.stringify(programBlocks, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    a.href = url;
+    a.download = `turtle_program_${timestamp}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showConsoleMessage('ファイルに書き出したのだ！📤', 'success');
+}
+
+// ファイルから入力
+function importFromFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const blocks = JSON.parse(e.target.result);
+            reconstructProgram(blocks);
+            showConsoleMessage('ファイルから読み込んだのだ！📥', 'success');
+        } catch (err) {
+            showConsoleMessage('ファイルの読み込みに失敗したのだ...🚫', 'error');
+        }
+    };
+    reader.readAsText(file);
+    // 同じファイルを再度選択できるようにリセット
+    e.target.value = '';
+}
+
+// ブロック配列からプログラムエリアを再構築
+function reconstructProgram(blocks) {
+    const programArea = document.getElementById('programArea');
+    programArea.innerHTML = '';
+
+    blocks.forEach(blockData => {
+        addBlockProgrammatically(blockData.type, blockData.params);
+    });
+
+    if (blocks.length === 0) {
+        addInitialBlock();
+    }
+
+    updatePreviewIfPossible();
 }
