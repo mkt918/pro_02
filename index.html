@@ -129,13 +129,7 @@
                     🔁 ↑ ここまで
                 </div>
 
-                <div class="palette-category">🖊️ 特殊</div>
-                <div class="block-template" data-type="color" data-code="t.color('{color}')">
-                    🎨 色を <input type="color" class="block-input" data-param="color" value="#000000"> に変える
-                </div>
-                <div class="block-template" data-type="clear" data-code="t.clear()">
-                    🧹 画面をそうじする
-                </div>
+                <div class="palette-category">🖊️ ペン</div>
                 <div class="block-template" data-type="penup" data-code="t.penup()">
                     🖊️ ペンをあげる
                 </div>
@@ -151,8 +145,11 @@
                         <option value="10">10</option>
                     </select>
                 </div>
-                <div class="block-template" data-type="home" data-code="t.home()">
-                    🏠 ホームに戻る
+                <div class="block-template" data-type="color" data-code="t.color('{color}')">
+                    🎨 色を <input type="color" class="block-input" data-param="color" value="#000000"> に変える
+                </div>
+                <div class="block-template" data-type="clear" data-code="t.clear()">
+                    🧹 画面をそうじする
                 </div>
                 <div class="palette-category">🌟 テンプレート</div>
                 <div class="block-template" data-type="template"
@@ -206,11 +203,11 @@
                 </div>
 
                 <div class="palette-category">🖊️ ペン</div>
-                <div class="block-template" data-type="fillcell" data-code="t.fillcell()">
-                    🎨 マスを塗る
+                <div class="block-template" data-type="penup" data-code="t.penup()">
+                    🖊️ ペンをあげる
                 </div>
-                <div class="block-template" data-type="color" data-code="t.color('{color}')">
-                    🎨 色 <input type="color" class="block-input" data-param="color" value="#000000">
+                <div class="block-template" data-type="pendown" data-code="t.pendown()">
+                    🖊️ ペンをさげる
                 </div>
                 <div class="block-template" data-type="pensize" data-code="t.pensize({size})">
                     📏 太さ <select class="block-select" data-param="size">
@@ -219,6 +216,15 @@
                         <option value="3">3</option>
                         <option value="5">5</option>
                     </select>
+                </div>
+                <div class="block-template" data-type="color" data-code="t.color('{color}')">
+                    🎨 色 <input type="color" class="block-input" data-param="color" value="#000000">
+                </div>
+                <div class="block-template" data-type="fillcell" data-code="t.fillcell()">
+                    🎨 マスを塗る
+                </div>
+                <div class="block-template" data-type="clear" data-code="t.clear()">
+                    🧹 画面をそうじする
                 </div>
 
                 <div class="palette-category">🔁 ループ</div>
@@ -236,10 +242,6 @@
                     🔁 ↑ ここまで
                 </div>
 
-                <div class="palette-category">🧹 その他</div>
-                <div class="block-template" data-type="clear" data-code="t.clear()">
-                    🧹 画面をそうじする
-                </div>
             </div>
         </section>
 

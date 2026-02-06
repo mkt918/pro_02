@@ -41,6 +41,11 @@ function initUnifiedSortable() {
 
         // パレット内のブロックをクリックでも追加できるようにする
         palette.onclick = function (e) {
+            // selectやinputをクリックした場合は、リストの変更を優先させるため追加しない
+            if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') {
+                return;
+            }
+
             const target = e.target.closest('.block-template');
             if (target && palette.contains(target)) {
                 const clone = target.cloneNode(true);
