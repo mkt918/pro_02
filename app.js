@@ -23,7 +23,9 @@ document.addEventListener('DOMContentLoaded', function () {
         { name: 'GridModeListeners', func: initGridModeListeners },
         { name: 'ProgramTabs', func: initProgramTabs },
         { name: 'GlobalSpeed', func: syncGlobalSpeed },
-        { name: 'InitialBlock', func: addInitialBlock }
+        { name: 'InitialBlock', func: addInitialBlock },
+        { name: 'TutorialListeners', func: initTutorialListeners },
+        { name: 'FirstVisitCheck', func: () => setTimeout(checkFirstVisit, 500) }
     ];
 
     tasks.forEach(task => {
