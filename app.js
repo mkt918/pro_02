@@ -164,6 +164,18 @@ function setupNewBlock(el) {
     if (type === 'color') {
         const grid = el.querySelector('.color-palette-grid');
         const colorInput = el.querySelector('input[type="color"]');
+        const mainRow = el.querySelector('.block-main-row');
+
+        if (mainRow && grid) {
+            mainRow.onclick = function (e) {
+                // input[type="color"] 自体がクリックされた場合はトグルしない
+                if (e.target.tagName === 'INPUT') return;
+
+                e.stopPropagation();
+                grid.classList.toggle('show');
+            };
+        }
+
         if (grid && colorInput) {
             FAMICOM_COLORS.forEach(color => {
                 const swatch = document.createElement('div');
