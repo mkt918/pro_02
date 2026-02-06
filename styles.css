@@ -212,11 +212,21 @@ body {
     margin-bottom: 0;
 }
 
-.column-header-with-controls .mode-control,
-.column-header-with-controls .grid-size-control {
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     background: rgba(79, 172, 254, 0.1);
     border: 1px solid rgba(79, 172, 254, 0.2);
-    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    padding: 0.2rem;
+}
+
+.column-header-with-controls .mode-control,
+.column-header-with-controls .grid-size-control {
+    background: transparent;
+    border: none;
+    padding: 0 0.4rem;
 }
 
 .column-blocks {
