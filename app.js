@@ -318,6 +318,7 @@ function initEventListeners() {
     document.getElementById('resetBtn').addEventListener('click', resetProgram);
     document.getElementById('saveBtn').addEventListener('click', saveToLocalStorage);
     document.getElementById('loadBtn').addEventListener('click', loadFromLocalStorage);
+    document.getElementById('clearAllBtn').addEventListener('click', clearAllBlocks);
     document.getElementById('exportBtn').addEventListener('click', exportToFile);
     document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
     document.getElementById('importFile').addEventListener('change', importFromFile);
@@ -401,6 +402,19 @@ function resetProgram() {
     updatePreviewIfPossible();
 
     showConsoleMessage('リセット完了！✨', 'success');
+}
+
+// プログラム全削除（確認ダイアログ付き）
+function clearAllBlocks() {
+    const confirmed = confirm('プログラムを全て削除しますか？\n（この操作は取り消せません）');
+
+    if (confirmed) {
+        const programArea = document.getElementById('programArea');
+        programArea.innerHTML = '';
+        addInitialBlock();
+        updatePreviewIfPossible();
+        showConsoleMessage('プログラムをクリアしました！🗑️', 'success');
+    }
 }
 
 // グリッドモード切り替え

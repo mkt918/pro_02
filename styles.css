@@ -224,6 +224,11 @@ body {
     color: #fff;
 }
 
+.btn-clear {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+    color: #fff;
+}
+
 /* ===== メインコンテナ ===== */
 .main-container {
     display: flex;
