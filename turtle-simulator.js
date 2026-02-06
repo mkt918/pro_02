@@ -285,19 +285,7 @@ class TurtleSimulator {
         this.lineWidth = size;
     }
 
-    async backward(distance) {
-        // 後退は前進の逆方向
-        const rad = (this.angle + 180) * Math.PI / 180;
-        const targetX = this.x + distance * Math.cos(rad);
-        const targetY = this.y + distance * Math.sin(rad);
-
-        if (!this.checkBoundary(targetX, targetY)) {
-            this.handleError('画面の外に出ようとしたので止まったよ！');
-            return;
-        }
-
-        await this.animateMove(targetX, targetY);
-    }
+    // backwardは既に定義済みなので削除(旧・重複箇所)
 
     async home() {
         // ペンを上げて中央に戻り、向きを上にする
@@ -551,7 +539,8 @@ async function executeCommand(cmd) {
         turtleSim.fillCell();
     }
     else if (cmd.includes('color')) {
-        const match = cmd.match(/color\(['"](\w+)['"]\)/);
+        // HEXなどの特殊文字も通るように正規表現を緩和
+        const match = cmd.match(/color\(['"](.+?)['"]\)/);
         if (match) turtleSim.setColor(match[1]);
     }
     else if (cmd.includes('pensize')) {

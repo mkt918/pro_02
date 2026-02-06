@@ -14,13 +14,28 @@ const FAMICOM_COLORS = [
 
 // 初期化
 document.addEventListener('DOMContentLoaded', function () {
-    initUnifiedSortable();
-    initEventListeners();
-    initTurtleSimulator();
-    initGridModeListeners();
-    initProgramTabs();
-    syncGlobalSpeed();
-    addInitialBlock(); // 初期ブロックの配置
+    console.log('DOM fully loaded and parsed. Initializing...');
+
+    const tasks = [
+        { name: 'Sortable', func: initUnifiedSortable },
+        { name: 'EventListeners', func: initEventListeners },
+        { name: 'TurtleSimulator', func: initTurtleSimulator },
+        { name: 'GridModeListeners', func: initGridModeListeners },
+        { name: 'ProgramTabs', func: initProgramTabs },
+        { name: 'GlobalSpeed', func: syncGlobalSpeed },
+        { name: 'InitialBlock', func: addInitialBlock }
+    ];
+
+    tasks.forEach(task => {
+        try {
+            task.func();
+            console.log(`Initialization task [${task.name}] success.`);
+        } catch (e) {
+            console.error(`Initialization task [${task.name}] failed:`, e);
+        }
+    });
+
+    console.log('Initialization sequence completed.');
 });
 
 // 初期ブロック（プログラム開始）を配置する
