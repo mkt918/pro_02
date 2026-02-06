@@ -405,7 +405,8 @@ body {
 [data-type="clear"],
 [data-type="penup"],
 [data-type="pendown"],
-[data-type="pensize"] {
+[data-type="pensize"],
+[data-type="fillcell"] {
     background: linear-gradient(90deg, #f6d365, #fda085);
     color: #5a3d00;
 }
@@ -413,6 +414,11 @@ body {
 [data-type="color"] {
     flex-direction: column;
     align-items: flex-start;
+}
+
+[data-type="template"] {
+    background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+    color: white;
 }
 
 .block-select {
