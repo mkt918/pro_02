@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- Build Trigger: 2026-02-04-1204 -->
+<!-- v1.0 正式リリース 2026-02-06 -->
 <html lang="ja">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌟 Python Turtle Learner v2.3 🌟</title>
+    <title>🌟 Python Turtle Learner v1.0 🌟</title>
     <!-- キャッシュ対策 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -23,8 +23,8 @@
     <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <h1>🐢 Python Turtle Learner v2.3</h1>
-            <p class="subtitle">【更新完了】10歩単位の選択肢を再適用したのだ！</p>
+            <h1>🐢 Python Turtle Learner v1.0</h1>
+            <p class="subtitle">🎉 正式リリース！ブロックでPythonタートルを学ぼう！</p>
         </div>
         <div class="header-right">
             <div class="speed-control">
@@ -346,6 +346,52 @@
             </div>
         </section>
     </main>
+
+    <!-- チュートリアルモーダル -->
+    <div id="tutorialModal" class="modal">
+        <div class="modal-content">
+            <h2>🐢 Python Turtle Learner へようこそ！</h2>
+
+            <div class="tutorial-steps">
+                <div class="tutorial-step">
+                    <h3>📝 ステップ1: ブロックを追加</h3>
+                    <p>左のパレットからブロックを<strong>ドラッグ＆ドロップ</strong>、または<strong>クリック</strong>してプログラムエリアに追加します。</p>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>🔄 ステップ2: ブロックを並び替え</h3>
+                    <p>プログラムエリアでブロックをドラッグして順序を変更できます。ブロックにマウスを乗せると「✕」ボタンで削除できます。</p>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>🎨 ステップ3: モードを選択</h3>
+                    <ul>
+                        <li><strong>🖌️ フリーハンド</strong>: 自由に線を描いて図形を作成</li>
+                        <li><strong>🎨 マス目</strong>: 8x8グリッドでドット絵を作成</li>
+                    </ul>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>▶️ ステップ4: 実行！</h3>
+                    <p><strong>▶ RUN</strong>ボタンでプログラムを実行します。<strong>🔄 RESET</strong>でキャンバスをリセットできます。</p>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>💡 ヒント</h3>
+                    <p>🌟 <strong>テンプレート</strong>を使うと、複雑な図形も簡単に描けます！<br>
+                        💾 <strong>保存</strong>ボタンで作品を保存できます。</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="dontShowAgain">
+                    次回から表示しない
+                </label>
+                <button id="closeTutorial" class="btn btn-run">始める！ 🚀</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="turtle-simulator.js?v=6"></script>

@@ -1,4 +1,4 @@
-// ===== メインアプリケーションロジック v2.3 (2026-02-04-1204) =====
+// ===== メインアプリケーションロジック v1.0 (2026-02-06) =====
 
 let programBlocks = [];
 let sortableProgram = null;
@@ -601,4 +601,39 @@ function reconstructProgram(blocks) {
     }
 
     updatePreviewIfPossible();
+}
+
+// ===== チュートリアル機能 =====
+
+// 初回訪問チェック
+function checkFirstVisit() {
+    const hasVisited = localStorage.getItem('turtle_tutorial_completed');
+    if (!hasVisited) {
+        showTutorial();
+    }
+}
+
+// チュートリアル表示
+function showTutorial() {
+    const modal = document.getElementById('tutorialModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+// チュートリアル閉じる
+function closeTutorial() {
+    const dontShow = document.getElementById('dontShowAgain').checked;
+    if (dontShow) {
+        localStorage.setItem('turtle_tutorial_completed', 'true');
+    }
+    document.getElementById('tutorialModal').style.display = 'none';
+}
+
+// チュートリアルイベントリスナー
+function initTutorialListeners() {
+    const closeBtn = document.getElementById('closeTutorial');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeTutorial);
+    }
 }
