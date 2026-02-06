@@ -486,6 +486,7 @@ function initProgramTabs() {
     tabButtons.forEach(button => {
         button.addEventListener('click', function () {
             const targetTab = this.dataset.tab;
+            if (!targetTab) return; // タブ切り替え用ではないボタンは無視
 
             // すべてのタブボタンとコンテンツから active を削除
             tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -511,7 +512,12 @@ function initProgramTabs() {
 // LocalStorageに保存
 function saveToLocalStorage() {
     updateProgramBlocks();
-    const data = JSON.stringify(programBlocks);
+    // DOM要素(element)を除外してシリアライザブルな形式にする
+    const serializable = programBlocks.map(b => ({
+        type: b.type,
+        params: b.params
+    }));
+    const data = JSON.stringify(serializable);
     localStorage.setItem('turtle_program', data);
     showConsoleMessage('ブラウザに保存したのだ！💾', 'success');
 }
@@ -531,7 +537,11 @@ function loadFromLocalStorage() {
 // ファイルに出力 (JSON)
 function exportToFile() {
     updateProgramBlocks();
-    const data = JSON.stringify(programBlocks, null, 2);
+    const serializable = programBlocks.map(b => ({
+        type: b.type,
+        params: b.params
+    }));
+    const data = JSON.stringify(serializable, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
