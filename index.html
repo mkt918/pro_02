@@ -287,11 +287,10 @@
             <div class="column-header-with-controls">
                 <h2 class="column-title">🎨 シミュレーション</h2>
                 <div class="mode-control">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="gridModeToggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <span id="modeLabel">✏️ フリーハンドモード</span>
+                    <div class="mode-tabs">
+                        <button class="mode-tab active" id="modeFreeBtn">✏️ フリーハンド</button>
+                        <button class="mode-tab" id="modeGridBtn">🎨 マス目</button>
+                    </div>
                 </div>
                 <div class="grid-size-control" id="gridSizeControl" style="display: none;">
                     <span>📐 マス:</span>
