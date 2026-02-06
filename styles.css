@@ -101,11 +101,16 @@ body {
     font-weight: 600;
 }
 
-#gridSize {
-    padding: 0.2rem 0.5rem;
-    border-radius: 5px;
-    border: none;
-    font-size: 0.75rem;
+#gridSize,
+.block-input[type="color"] {
+    padding: 0.1rem;
+    height: 1.5rem;
+    width: 2.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: white;
+    cursor: pointer;
+    vertical-align: middle;
 }
 
 /* モード切り替えタブ */

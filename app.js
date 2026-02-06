@@ -105,10 +105,10 @@ function setupNewBlock(el) {
     el.classList.add('program-block');
     // ...
     // 入力パラメータの初期値取得
-    const selects = el.querySelectorAll('select');
     const params = {};
-    selects.forEach(sel => {
-        params[sel.dataset.param] = sel.value;
+    const controls = el.querySelectorAll('select, input');
+    controls.forEach(control => {
+        params[control.dataset.param] = control.value;
     });
     el.dataset.params = JSON.stringify(params);
 
@@ -134,13 +134,14 @@ function setupNewBlock(el) {
     el.appendChild(contentSpan);
     el.appendChild(deleteBtn);
 
-    // セレクトボックスのイベント監視
-    const programSelects = el.querySelectorAll('select');
-    programSelects.forEach(sel => {
-        const paramName = sel.dataset.param;
-        if (params[paramName]) sel.value = params[paramName];
+    // フォーム要素のイベント監視
+    const programControls = el.querySelectorAll('select, input');
+    programControls.forEach(control => {
+        const paramName = control.dataset.param;
+        if (params[paramName]) control.value = params[paramName];
 
-        sel.addEventListener('change', function () {
+        const eventType = control.tagName === 'SELECT' ? 'change' : 'input';
+        control.addEventListener(eventType, function () {
             const currentParams = JSON.parse(el.dataset.params);
             currentParams[paramName] = this.value;
             el.dataset.params = JSON.stringify(currentParams);
@@ -178,10 +179,10 @@ function addBlockProgrammatically(type, values) {
 
     // 値をセット
     if (values) {
-        const selects = clone.querySelectorAll('select');
-        selects.forEach(sel => {
-            const param = sel.dataset.param;
-            if (values[param]) sel.value = values[param];
+        const controls = clone.querySelectorAll('select, input');
+        controls.forEach(control => {
+            const param = control.dataset.param;
+            if (values[param]) control.value = values[param];
         });
     }
 
