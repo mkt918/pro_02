@@ -65,8 +65,24 @@
                         <option value="100" selected>100</option>
                     </select> 歩すすむ
                 </div>
+                <div class="block-template" data-type="circle" data-code="t.circle({radius}, {extent})">
+                    ⚪ <select class="block-select" data-param="extent">
+                        <option value="360" selected>円</option>
+                        <option value="180">半円</option>
+                        <option value="90">1/4円</option>
+                        <option value="45">1/8円</option>
+                    </select> を描く (半径 <select class="block-select" data-param="radius">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40" selected>40</option>
+                        <option value="50">50</option>
+                        <option value="60">60</option>
+                        <option value="80">80</option>
+                        <option value="100">100</option>
+                    </select>)
+                </div>
                 <div class="block-template" data-type="home" data-code="t.home()">
-
                     🏠 ホームに戻る
                 </div>
 
@@ -98,19 +114,7 @@
                     </select> 回る
                 </div>
 
-                <div class="palette-category">🎨 図形</div>
-                <div class="block-template" data-type="circle" data-code="t.circle({radius})">
-                    ⚪ まあるく描く (半径 <select class="block-select" data-param="radius">
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="30">30</option>
-                        <option value="40" selected>40</option>
-                        <option value="50">50</option>
-                        <option value="60">60</option>
-                        <option value="80">80</option>
-                        <option value="100">100</option>
-                    </select>)
-                </div>
+                <!-- カテゴリー削除 -->
 
                 <div class="palette-category">🔁 ループ</div>
                 <div class="block-template loop-block" data-type="loop_start" data-code="for i in range({count}):">
@@ -192,8 +196,20 @@
                         <option value="10">10マス</option>
                     </select> 進む
                 </div>
+                <div class="block-template" data-type="circle" data-code="t.circle({radius}, {extent})">
+                    ⚪ <select class="block-select" data-param="extent">
+                        <option value="360" selected>円</option>
+                        <option value="180">半円</option>
+                        <option value="90">1/4円</option>
+                        <option value="45">1/8円</option>
+                    </select> (半径 <select class="block-select" data-param="radius">
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4" selected>4</option>
+                        <option value="5">5</option>
+                    </select> マス)
+                </div>
                 <div class="block-template" data-type="home" data-code="t.home()">
-
                     🏠 A1に戻る
                 </div>
 

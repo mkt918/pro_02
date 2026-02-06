@@ -182,13 +182,13 @@ class TurtleSimulator {
         this.angle = (this.angle - rotateAngle + 360) % 360;
     }
 
-    async circle(radius) {
+    async circle(radius, extent = 360) {
         if (this.hasError) return;
 
         // 簡易的な円描画（36角形）
-        const steps = 36;
-        const stepAngle = 360 / steps;
-        const stepDistance = (2 * Math.PI * radius) / steps;
+        const steps = Math.floor(36 * (Math.abs(extent) / 360));
+        const stepAngle = 360 / 36;
+        const stepDistance = (2 * Math.PI * radius) / 36;
 
         for (let i = 0; i < steps; i++) {
             await this.forward(stepDistance);
@@ -516,8 +516,12 @@ async function executeCommand(cmd) {
         if (match) turtleSim.left(parseInt(match[1]));
     }
     else if (cmd.includes('circle')) {
-        const match = cmd.match(/circle\((\d+)\)/);
-        if (match) await turtleSim.circle(parseInt(match[1]));
+        const match = cmd.match(/circle\((\d+)(?:,\s*(\d+))?\)/);
+        if (match) {
+            const radius = parseInt(match[1]);
+            const extent = match[2] ? parseInt(match[2]) : 360;
+            await turtleSim.circle(radius, extent);
+        }
     }
     else if (cmd.includes('speed')) {
         const match = cmd.match(/speed\((\d+)\)/);
