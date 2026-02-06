@@ -335,17 +335,23 @@ function resetProgram() {
 
 // グリッドモード切り替え
 function initGridModeListeners() {
-    const toggle = document.getElementById('gridModeToggle');
+    const modeFreeBtn = document.getElementById('modeFreeBtn');
+    const modeGridBtn = document.getElementById('modeGridBtn');
     const gridSizeControl = document.getElementById('gridSizeControl');
     const gridSizeSelect = document.getElementById('gridSize');
-    const modeLabel = document.getElementById('modeLabel');
     const freePalette = document.getElementById('freePalette');
     const gridPalette = document.getElementById('gridPalette');
 
-    toggle.addEventListener('change', function () {
-        const enabled = this.checked;
+    function switchMode(enabled) {
+        if (enabled) {
+            modeGridBtn.classList.add('active');
+            modeFreeBtn.classList.remove('active');
+        } else {
+            modeFreeBtn.classList.add('active');
+            modeGridBtn.classList.remove('active');
+        }
+
         gridSizeControl.style.display = enabled ? 'flex' : 'none';
-        modeLabel.textContent = enabled ? '🎨 マス目モード' : '✏️ フリーハンドモード';
 
         // パレットを切り替え
         if (enabled) {
@@ -368,10 +374,13 @@ function initGridModeListeners() {
 
         // パレットのSortableを再初期化
         initUnifiedSortable();
-    });
+    }
+
+    if (modeFreeBtn) modeFreeBtn.addEventListener('click', () => switchMode(false));
+    if (modeGridBtn) modeGridBtn.addEventListener('click', () => switchMode(true));
 
     gridSizeSelect.addEventListener('change', function () {
-        if (turtleSim && toggle.checked) {
+        if (turtleSim && modeGridBtn && modeGridBtn.classList.contains('active')) {
             turtleSim.setGridMode(true, parseInt(this.value));
         }
     });
